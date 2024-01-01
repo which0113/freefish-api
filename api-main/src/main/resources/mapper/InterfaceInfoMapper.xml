@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.which.api.mapper.InterfaceInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.which.api.model.entity.InterfaceInfo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="BIGINT"/>
+        <result property="method" column="method" jdbcType="VARCHAR"/>
+        <result property="requestParams" column="requestParams" jdbcType="VARCHAR"/>
+        <result property="responseParams" column="responseParams" jdbcType="VARCHAR"/>
+        <result property="reduceScore" column="reduceScore" jdbcType="BIGINT"/>
+        <result property="requestExample" column="requestExample" jdbcType="VARCHAR"/>
+        <result property="requestHeader" column="requestHeader" jdbcType="VARCHAR"/>
+        <result property="responseHeader" column="responseHeader" jdbcType="VARCHAR"/>
+        <result property="returnFormat" column="returnFormat" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="totalInvokes" column="totalInvokes" jdbcType="BIGINT"/>
+        <result property="avatarUrl" column="avatarUrl" jdbcType="VARCHAR"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,url,
+        userId,method,requestParams,
+        responseParams,reduceScore,requestExample,
+        requestHeader,responseHeader,returnFormat,
+        description,status,totalInvokes,
+        avatarUrl,createTime,updateTime,
+        isDelete
+    </sql>
+</mapper>

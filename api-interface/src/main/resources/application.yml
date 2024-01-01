@@ -1,0 +1,10 @@
+spring:
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher
+  application:
+    name: api-interface
+server:
+  port: 8002
+  servlet:
+    context-path: /api
