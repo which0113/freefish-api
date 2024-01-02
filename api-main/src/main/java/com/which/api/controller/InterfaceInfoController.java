@@ -19,10 +19,10 @@ import com.which.api.model.enums.InterfaceStatusEnum;
 import com.which.api.model.vo.UserVO;
 import com.which.api.service.InterfaceInfoService;
 import com.which.api.service.UserService;
-import icu.qimuu.qiapisdk.client.QiApiClient;
-import icu.qimuu.qiapisdk.model.request.CurrencyRequest;
-import icu.qimuu.qiapisdk.model.response.ResultResponse;
-import icu.qimuu.qiapisdk.service.ApiService;
+import com.which.apisdk.client.ApiClient;
+import com.which.apisdk.model.request.CurrencyRequest;
+import com.which.apisdk.model.response.ResultResponse;
+import com.which.apisdk.service.ApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
@@ -376,12 +376,12 @@ public class InterfaceInfoController {
         String secretKey = loginUser.getSecretKey();
         try {
             // todo 需要改为自己的 ApiClient
-            QiApiClient qiApiClient = new QiApiClient(accessKey, secretKey);
+            ApiClient apiClient = new ApiClient(accessKey, secretKey);
             CurrencyRequest currencyRequest = new CurrencyRequest();
             currencyRequest.setMethod(interfaceInfo.getMethod());
             currencyRequest.setPath(interfaceInfo.getUrl());
             currencyRequest.setRequestParams(params);
-            ResultResponse response = apiService.request(qiApiClient, currencyRequest);
+            ResultResponse response = apiService.request(apiClient, currencyRequest);
             return ResultUtils.success(response.getData());
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, e.getMessage());

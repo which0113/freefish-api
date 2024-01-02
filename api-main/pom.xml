@@ -116,9 +116,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>icu.qimuu</groupId>
-            <artifactId>qi-api-sdk</artifactId>
-            <version>0.0.3</version>
+            <groupId>com.which</groupId>
+            <artifactId>api-sdk</artifactId>
+            <version>0.0.1</version>
         </dependency>
     </dependencies>
 

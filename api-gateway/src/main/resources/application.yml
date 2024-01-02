@@ -7,7 +7,7 @@ spring:
         - id: api_route
           uri: http://localhost:8002
           predicates:
-            - Path=/api/{api_url}
+            - Path=/api/**
 server:
   address: 0.0.0.0
   port: 8000
