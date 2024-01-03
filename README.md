@@ -29,6 +29,10 @@
 - Spring Boot 2.7.0
 - Spring MVC
 - MySQL 数据库
+- Dubbo 分布式（RPC、Nacos）
+- Spring Cloud Gateway 微服务网关
+- API 签名认证（Http 调用）
+- Spring Boot Starter（SDK 开发）
 - Swagger + Knife4j 接口文档
 - Spring Session Redis 分布式登录
 - Apache Commons Lang3 工具类
