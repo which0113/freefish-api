@@ -1,8 +1,9 @@
 package com.which.api.exception;
 
-import com.which.api.common.BaseResponse;
-import com.which.api.common.ErrorCode;
-import com.which.api.common.ResultUtils;
+import com.which.apicommon.common.BaseResponse;
+import com.which.apicommon.common.BusinessException;
+import com.which.apicommon.common.ErrorCode;
+import com.which.apicommon.common.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

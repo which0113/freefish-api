@@ -128,7 +128,7 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
                 throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "非法请求");
             }
             if (user.getBalance() <= 0) {
-                throw new BusinessException(ErrorCode.OPERATION_ERROR, "余额不足，请先充值。");
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "积分不足");
             }
             String method = Objects.requireNonNull(request.getMethod()).toString();
             String uri = request.getURI().toString().trim();

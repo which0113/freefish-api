@@ -2,10 +2,10 @@ package com.which.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.which.api.common.ErrorCode;
-import com.which.api.exception.BusinessException;
 import com.which.api.mapper.InterfaceInfoMapper;
 import com.which.api.service.InterfaceInfoService;
+import com.which.apicommon.common.BusinessException;
+import com.which.apicommon.common.ErrorCode;
 import com.which.apicommon.model.entity.InterfaceInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,4 @@
-package com.which.api.exception;
-
-import com.which.api.common.ErrorCode;
+package com.which.apicommon.common;
 
 /**
  * 自定义异常类

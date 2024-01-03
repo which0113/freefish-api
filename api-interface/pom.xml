@@ -50,6 +50,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.which</groupId>
+            <artifactId>api-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.which</groupId>
+            <artifactId>api-common</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

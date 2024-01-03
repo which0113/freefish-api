@@ -1,6 +1,7 @@
 package com.which.api.exception;
 
-import com.which.api.common.ErrorCode;
+import com.which.apicommon.common.BusinessException;
+import com.which.apicommon.common.ErrorCode;
 
 /**
  * 抛异常工具类
