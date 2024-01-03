@@ -1,7 +1,7 @@
 package com.which.api.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.which.api.model.entity.InterfaceInfo;
+import com.which.apicommon.model.entity.InterfaceInfo;
 
 /**
  * @author which
@@ -17,5 +17,13 @@ public interface InterfaceInfoService extends IService<InterfaceInfo> {
      * @param interfaceInfo 接口信息
      */
     void validInterfaceInfo(InterfaceInfo interfaceInfo, boolean add);
+
+    /**
+     * 更新总调用数
+     *
+     * @param interfaceId 接口id
+     * @return boolean
+     */
+    boolean updateTotalInvokes(long interfaceId);
 
 }

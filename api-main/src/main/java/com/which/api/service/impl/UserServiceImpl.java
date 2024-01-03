@@ -3,6 +3,7 @@ package com.which.api.service.impl;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.which.api.common.ErrorCode;
 import com.which.api.exception.BusinessException;
@@ -260,6 +261,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(loginUser, userVO);
         return userVO;
+    }
+
+    @Override
+    public boolean reduceWalletBalance(Long userId, Long reduceScore) {
+        LambdaUpdateWrapper<User> userLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        userLambdaUpdateWrapper.eq(User::getId, userId);
+        userLambdaUpdateWrapper.setSql("balance = balance - " + reduceScore);
+        return this.update(userLambdaUpdateWrapper);
     }
 
     /**

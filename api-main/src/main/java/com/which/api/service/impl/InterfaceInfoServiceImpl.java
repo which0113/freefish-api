@@ -1,11 +1,12 @@
 package com.which.api.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.which.api.common.ErrorCode;
 import com.which.api.exception.BusinessException;
 import com.which.api.mapper.InterfaceInfoMapper;
-import com.which.api.model.entity.InterfaceInfo;
 import com.which.api.service.InterfaceInfoService;
+import com.which.apicommon.model.entity.InterfaceInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,14 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         if (StringUtils.isNotBlank(description) && description.length() > 100) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口描述过长");
         }
+    }
+
+    @Override
+    public boolean updateTotalInvokes(long interfaceId) {
+        LambdaUpdateWrapper<InterfaceInfo> invokeLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        invokeLambdaUpdateWrapper.eq(InterfaceInfo::getId, interfaceId);
+        invokeLambdaUpdateWrapper.setSql("totalInvokes = totalInvokes + 1");
+        return this.update(invokeLambdaUpdateWrapper);
     }
 
 }

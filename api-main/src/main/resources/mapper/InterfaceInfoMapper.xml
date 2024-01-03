@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.which.api.mapper.InterfaceInfoMapper">
 
-    <resultMap id="BaseResultMap" type="com.which.api.model.entity.InterfaceInfo">
+    <resultMap id="BaseResultMap" type="com.which.apicommon.model.entity.InterfaceInfo">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="url" column="url" jdbcType="VARCHAR"/>

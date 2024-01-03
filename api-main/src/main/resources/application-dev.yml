@@ -38,7 +38,7 @@ spring:
       max-file-size: 10MB
 server:
   address: 0.0.0.0
-  port: 8001
+  port: 9001
   servlet:
     context-path: /api
     # cookie 30 天过期
@@ -62,3 +62,15 @@ cos:
     secretKey: xxx
     region: xxx
     bucket: xxx
+dubbo:
+  application:
+    enable-file-cache: false
+    name: dubbo-springboot-provider
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    id: nacos-registry
+    address: nacos://101.43.54.167:8848
+    username: nacos
+    password: 123456@Aa

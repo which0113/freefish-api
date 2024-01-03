@@ -5,11 +5,21 @@ spring:
     gateway:
       routes:
         - id: api_route
-          uri: http://localhost:8002
+          uri: http://localhost:9002
           predicates:
             - Path=/api/**
 server:
   address: 0.0.0.0
-  port: 8000
+  port: 9000
   servlet:
     context-path: /api
+dubbo:
+  application:
+    enable-file-cache: false
+    name: dubbo-springboot-provider
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    id: nacos-registry
+    address: nacos://localhost:8848

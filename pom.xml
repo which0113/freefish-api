@@ -21,6 +21,9 @@
         <junit.version>4.13.2</junit.version>
         <hutool-all.version>5.8.16</hutool-all.version>
         <api-sdk.version>0.0.1</api-sdk.version>
+        <dubbo.version>3.0.9</dubbo.version>
+        <nacos-client.version>2.1.0</nacos-client.version>
+        <api-common.version>0.0.1</api-common.version>
     </properties>
 
     <modules>
@@ -79,6 +82,21 @@
                 <groupId>com.which</groupId>
                 <artifactId>api-sdk</artifactId>
                 <version>${api-sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.which</groupId>
+                <artifactId>api-common</artifactId>
+                <version>${api-common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+                <version>${nacos-client.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

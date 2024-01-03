@@ -14,5 +14,5 @@ public interface InnerUserInterfaceInvokeService {
      * @param reduceScore     降低分数
      * @return boolean
      */
-    boolean invoke(Long interfaceInfoId, Long userId, Integer reduceScore);
+    boolean invoke(Long interfaceInfoId, Long userId, Long reduceScore);
 }

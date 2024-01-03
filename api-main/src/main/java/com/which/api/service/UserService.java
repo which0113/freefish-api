@@ -80,4 +80,13 @@ public interface UserService extends IService<User> {
      */
     UserVO updateVoucher(User loginUser);
 
+    /**
+     * 减少钱包余额
+     *
+     * @param userId      用户id
+     * @param reduceScore
+     * @return boolean
+     */
+    boolean reduceWalletBalance(Long userId, Long reduceScore);
+
 }

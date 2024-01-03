@@ -5,6 +5,6 @@ spring:
   application:
     name: api-interface
 server:
-  port: 8002
+  port: 9002
   servlet:
     context-path: /api
