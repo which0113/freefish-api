@@ -20,7 +20,7 @@
         <knife4j-spring-boot-starter.version>3.0.3</knife4j-spring-boot-starter.version>
         <junit.version>4.13.2</junit.version>
         <hutool-all.version>5.8.16</hutool-all.version>
-        <api-sdk.version>0.0.1</api-sdk.version>
+        <api-sdk.version>0.0.2</api-sdk.version>
         <dubbo.version>3.0.9</dubbo.version>
         <nacos-client.version>2.1.0</nacos-client.version>
         <api-common.version>0.0.1</api-common.version>

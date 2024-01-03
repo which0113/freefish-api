@@ -15,8 +15,7 @@ server:
     context-path: /api
 dubbo:
   application:
-    enable-file-cache: false
-    name: dubbo-springboot-provider
+    name: dubbo-springboot-consumer
   protocol:
     name: dubbo
     port: -1
