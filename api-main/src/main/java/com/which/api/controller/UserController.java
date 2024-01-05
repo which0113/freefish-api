@@ -7,6 +7,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.which.api.annotation.AuthCheck;
 import com.which.api.common.DeleteRequest;
 import com.which.api.common.IdRequest;
+import com.which.api.model.dto.email.UserBindEmailRequest;
+import com.which.api.model.dto.email.UserEmailLoginRequest;
+import com.which.api.model.dto.email.UserEmailRegisterRequest;
+import com.which.api.model.dto.email.UserUnBindEmailRequest;
 import com.which.api.model.dto.user.*;
 import com.which.api.model.entity.User;
 import com.which.api.model.enums.UserStatusEnum;
@@ -329,6 +333,53 @@ public class UserController {
         }
         user.setStatus(UserStatusEnum.BAN.getValue());
         return ResultUtils.success(userService.updateById(user));
+    }
+
+    /**
+     * 用户电子邮件登录
+     *
+     * @param userEmailLoginRequest 用户登录请求
+     * @param request               请求
+     * @return
+     */
+    @PostMapping("/email/login")
+    public BaseResponse<UserVO> userEmailLogin(@RequestBody UserEmailLoginRequest userEmailLoginRequest, HttpServletRequest request) {
+        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中！");
+    }
+
+    /**
+     * 用户绑定电子邮件
+     *
+     * @param request              请求
+     * @param userBindEmailRequest 用户绑定电子邮件请求
+     * @return
+     */
+    @PostMapping("/bind/login")
+    public BaseResponse<UserVO> userBindEmail(@RequestBody UserBindEmailRequest userBindEmailRequest, HttpServletRequest request) {
+        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中！");
+    }
+
+    /**
+     * 用户取消绑定电子邮件
+     *
+     * @param request                请求
+     * @param userUnBindEmailRequest 用户取消绑定电子邮件请求
+     * @return
+     */
+    @PostMapping("/unbindEmail")
+    public BaseResponse<UserVO> userUnBindEmail(@RequestBody UserUnBindEmailRequest userUnBindEmailRequest, HttpServletRequest request) {
+        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中！");
+    }
+
+    /**
+     * 用户电子邮件注册
+     *
+     * @param userEmailRegisterRequest 用户电子邮件注册请求
+     * @return
+     */
+    @PostMapping("/email/register")
+    public BaseResponse<Long> userEmailRegister(@RequestBody UserEmailRegisterRequest userEmailRegisterRequest) {
+        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中！");
     }
 
     /**
