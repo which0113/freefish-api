@@ -27,6 +27,11 @@ public class GlobalWebMvcConfig implements WebMvcConfigurer {
                 .allowedHeaders("*");
     }
 
+    /**
+     * CorsFilter 可以不写
+     *
+     * @return
+     */
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
