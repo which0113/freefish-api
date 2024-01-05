@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author which
  */
 @Configuration
-public class GlobalWebMvcConfiguration implements WebMvcConfigurer {
+public class GlobalWebMvcConfig implements WebMvcConfigurer {
 
     /**
      * 跨域
@@ -31,9 +31,9 @@ public class GlobalWebMvcConfiguration implements WebMvcConfigurer {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         //允许所有进行跨域调用
-        config.addAllowedOrigin("*");
+        config.addAllowedOriginPattern("*");
         //允许指定 网络协议 域名 端口 进行跨域调用
-//        config.addAllowedOrigin("http://freefish.love");
+//        config.addAllowedOriginPattern("http://freefish.love");
         //允许跨越发送cookie
         config.setAllowCredentials(true);
         //放行全部原始头信息
