@@ -331,4 +331,15 @@ public class UserController {
         return ResultUtils.success(userService.updateById(user));
     }
 
+    /**
+     * 获取验证码
+     *
+     * @param emailAccount 电子邮件账号
+     * @return
+     */
+    @GetMapping("/getCaptcha")
+    public BaseResponse<Boolean> getCaptcha(String emailAccount) {
+        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中！");
+    }
+
 }
