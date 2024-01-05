@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: api_route
+          uri: http://interface.freefish.love
+          predicates:
+            - Path=/api/**
+server:
+  port: 9000
+  servlet:
+    context-path: /api
+dubbo:
+  application:
+    name: dubbo-springboot-consumer
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    id: nacos-registry
+    address: nacos://10.0.16.5:8848
+    username: nacos
+    password: 123456@Aa

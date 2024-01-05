@@ -2,7 +2,7 @@
 # @author which
 spring:
   application:
-    name: freefish-api
+    name: api-main
   # 默认 dev 环境
   profiles:
-    active: dev
+    active: prod

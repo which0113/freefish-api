@@ -42,3 +42,7 @@ dubbo:
   registry:
     id: nacos-registry
     address: nacos://localhost:8848
+com:
+  which:
+    client:
+      host: http://localhost:9000/api
