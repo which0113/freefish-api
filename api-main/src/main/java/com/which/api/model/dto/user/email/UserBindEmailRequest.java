@@ -1,4 +1,4 @@
-package com.which.api.model.dto.email;
+package com.which.api.model.dto.user.email;
 
 import lombok.Data;
 

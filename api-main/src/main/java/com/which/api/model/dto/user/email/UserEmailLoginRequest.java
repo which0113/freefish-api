@@ -1,14 +1,15 @@
-package com.which.api.model.dto.email;
+package com.which.api.model.dto.user.email;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
+
 /**
  * @author which
  */
 @Data
-public class UserUnBindEmailRequest implements Serializable {
+public class UserEmailLoginRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
