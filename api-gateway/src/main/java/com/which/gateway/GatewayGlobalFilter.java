@@ -161,7 +161,7 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
                     for (RequestParamsField requestParamsField : list) {
                         if ("是".equals(requestParamsField.getRequired())) {
                             if (StringUtils.isBlank((CharSequence) requestBodyMap.get(requestParamsField.getFieldName())) || !requestBodyMap.containsKey(requestParamsField.getFieldName())) {
-                                throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求参数有误，" + requestParamsField.getFieldName() + "为必选项，详细参数请参考API文档：https://doc.qimuu.icu/");
+                                throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求参数有误，" + requestParamsField.getFieldName() + "为必选项，详细参数请参考API文档");
                             }
                         }
                     }
@@ -173,7 +173,7 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
                     for (RequestParamsField requestParamsField : list) {
                         if ("是".equals(requestParamsField.getRequired())) {
                             if (StringUtils.isBlank(queryParams.getFirst(requestParamsField.getFieldName())) || !queryParams.containsKey(requestParamsField.getFieldName())) {
-                                throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求参数有误，" + requestParamsField.getFieldName() + "为必选项，详细参数请参考API文档：https://doc.qimuu.icu/");
+                                throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求参数有误，" + requestParamsField.getFieldName() + "为必选项，详细参数请参考API文档");
                             }
                         }
                     }

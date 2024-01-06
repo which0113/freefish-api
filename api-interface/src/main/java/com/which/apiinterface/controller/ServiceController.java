@@ -27,6 +27,11 @@ import static com.which.apiinterface.utils.ResponseUtils.responseToMap;
 @RequestMapping("/")
 public class ServiceController {
 
+    @GetMapping("/loveTalk")
+    public String randomLoveTalk() {
+        return get("https://api.vvhan.com/api/love");
+    }
+
     @GetMapping("/poisonousChickenSoup")
     public String getPoisonousChickenSoup() {
         return get("https://api.btstu.cn/yan/api.php?charset=utf-8&encode=json");
