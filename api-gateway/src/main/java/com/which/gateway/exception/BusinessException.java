@@ -7,7 +7,7 @@ import com.which.apicommon.common.ErrorCode;
  */
 public class BusinessException extends RuntimeException {
 
-    private static final long serialVersionUID = -4593480471566176059L;
+    private static final long serialVersionUID = 1L;
     private final int code;
 
     public BusinessException(int code, String message) {

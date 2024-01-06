@@ -51,6 +51,11 @@ import static com.which.gateway.CacheBodyGatewayFilter.CACHE_REQUEST_BODY_OBJECT
 public class GatewayGlobalFilter implements GlobalFilter, Ordered {
 
     /**
+     * 接口部署的服务器
+     */
+    private final static String API_SERVER_ADDRESS = "http://gateway.freefish.love";
+
+    /**
      * 请求白名单
      */
     private final static List<String> WHITE_HOST_LIST = Arrays.asList("127.0.0.1");
@@ -131,7 +136,7 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
                 throw new BusinessException(ErrorCode.OPERATION_ERROR, "积分不足");
             }
             String method = Objects.requireNonNull(request.getMethod()).toString();
-            String uri = request.getURI().toString().trim();
+            String uri = API_SERVER_ADDRESS + request.getPath().toString().trim();
 
             if (StringUtils.isAnyBlank(uri, method)) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR);
