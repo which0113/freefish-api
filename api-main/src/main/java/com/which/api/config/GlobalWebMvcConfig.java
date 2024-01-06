@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -15,20 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class GlobalWebMvcConfig implements WebMvcConfigurer {
 
     /**
-     * 跨域
-     */
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOriginPatterns("*")
-                .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowCredentials(true)
-                .maxAge(3600)
-                .allowedHeaders("*");
-    }
-
-    /**
-     * CorsFilter 可以不写
+     * 解决跨域问题
      *
      * @return
      */
@@ -37,8 +23,6 @@ public class GlobalWebMvcConfig implements WebMvcConfigurer {
         CorsConfiguration config = new CorsConfiguration();
         //允许所有进行跨域调用
         config.addAllowedOriginPattern("*");
-        //允许指定 网络协议 域名 端口 进行跨域调用
-//        config.addAllowedOriginPattern("http://freefish.love");
         //允许跨越发送cookie
         config.setAllowCredentials(true);
         //放行全部原始头信息
@@ -49,4 +33,5 @@ public class GlobalWebMvcConfig implements WebMvcConfigurer {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
+
 }
