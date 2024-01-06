@@ -5,7 +5,7 @@ spring:
     gateway:
       routes:
         - id: api_route
-          uri: http://interface.freefish.love
+          uri: https://interface.freefish.love
           predicates:
             - Path=/api/**
 server:

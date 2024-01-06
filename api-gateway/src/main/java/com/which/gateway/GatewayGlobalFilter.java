@@ -53,7 +53,7 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
     /**
      * 接口部署的服务器
      */
-    private final static String API_SERVER_ADDRESS = "http://gateway.freefish.love";
+    private final static String API_SERVER_ADDRESS = "https://gateway.freefish.love";
 
     /**
      * 请求白名单
