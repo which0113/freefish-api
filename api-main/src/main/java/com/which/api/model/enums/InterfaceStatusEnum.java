@@ -19,7 +19,6 @@ public enum InterfaceStatusEnum {
      * 离线
      */
     OFFLINE("关闭", 2),
-
     /**
      * 离线
      */

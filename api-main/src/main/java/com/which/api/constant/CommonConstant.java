@@ -22,4 +22,9 @@ public interface CommonConstant {
      */
     Long CRAWLER_NUM = 50L;
 
+    /**
+     * oss 访问地址
+     */
+    String OSS_HOST = "https://img.freefish.love";
+
 }

@@ -45,3 +45,10 @@ com:
   which:
     client:
       host: http://localhost:9000/api
+# 对象存储 oss
+alibaba:
+  cloud:
+    oss:
+      endpoint: https://oss-cn-beijing.aliyuncs.com
+    access-key: LTAI5tM9SCZnTtQoyZZFSZZU
+    secret-key: iQK0CFotGSqyLPCWIuqxdI0HE5nBIF
