@@ -392,4 +392,21 @@ public class InterfaceInfoController {
         }
     }
 
+    /**
+     * 更新接口图片（url）
+     *
+     * @param interfaceInfoUpdateAvatarRequest
+     * @return
+     */
+    @PostMapping("/updateInterfaceInfoAvatar")
+    @AuthCheck(mustRole = ADMIN_ROLE)
+    public BaseResponse<Boolean> updateInterfaceInfoAvatarUrl(@RequestBody InterfaceInfoUpdateAvatarRequest interfaceInfoUpdateAvatarRequest) {
+        if (ObjectUtils.anyNull(interfaceInfoUpdateAvatarRequest, interfaceInfoUpdateAvatarRequest.getId()) || interfaceInfoUpdateAvatarRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        BeanUtils.copyProperties(interfaceInfoUpdateAvatarRequest, interfaceInfo);
+        return ResultUtils.success(interfaceInfoService.updateById(interfaceInfo));
+    }
+
 }
