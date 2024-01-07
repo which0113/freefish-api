@@ -1,10 +1,7 @@
 package com.which.api.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -13,25 +10,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class GlobalWebMvcConfig implements WebMvcConfigurer {
 
-    /**
-     * 解决跨域问题
-     *
-     * @return
-     */
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
-        //允许所有进行跨域调用
-        config.addAllowedOriginPattern("*");
-        //允许跨越发送cookie
-        config.setAllowCredentials(true);
-        //放行全部原始头信息
-        config.addAllowedHeader("*");
-        //允许所有请求方法跨域调用
-        config.addAllowedMethod("*");
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        //设置允许跨域的路径
+        registry.addMapping("/**")
+                //设置允许跨域请求的域名（如果Origins为*时，Credentials不能是true）
+                .allowedOriginPatterns("*")
+                //是否允许证书（cookie） 默认关闭
+                .allowCredentials(true)
+                //设置允许的方法
+                .allowedMethods("*")
+                // 设置允许的header属性
+                .allowedHeaders("*")
+                //跨域允许时间
+                .maxAge(3600);
     }
 
 }
