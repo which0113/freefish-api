@@ -25,6 +25,6 @@ public interface CommonConstant {
     /**
      * oss 访问地址
      */
-    String OSS_HOST = "https://img.freefish.love";
+    String OSS_HOST = "https://img.freefish.love/";
 
 }
