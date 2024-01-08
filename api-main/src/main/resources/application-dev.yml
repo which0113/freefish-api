@@ -44,6 +44,7 @@ dubbo:
 com:
   which:
     client:
+      # gateway host/api（仅用于 dev环境）
       host: http://localhost:9000/api
 # 对象存储 oss
 alibaba:

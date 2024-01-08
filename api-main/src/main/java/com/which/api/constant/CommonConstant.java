@@ -27,4 +27,9 @@ public interface CommonConstant {
      */
     String OSS_HOST = "https://img.freefish.love/";
 
+    /**
+     * oss bucket名称
+     */
+    String BUCKET_NAME = "freefish-api";
+
 }

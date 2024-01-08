@@ -10,6 +10,7 @@ import com.which.apicommon.model.vo.UserVO;
 import com.which.apicommon.service.inner.InnerInterfaceInfoService;
 import com.which.apicommon.service.inner.InnerUserInterfaceInvokeService;
 import com.which.apicommon.service.inner.InnerUserService;
+import com.which.apisdk.config.ApiClientConfig;
 import com.which.gateway.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +34,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -50,10 +52,8 @@ import static com.which.gateway.CacheBodyGatewayFilter.CACHE_REQUEST_BODY_OBJECT
 @Slf4j
 public class GatewayGlobalFilter implements GlobalFilter, Ordered {
 
-    /**
-     * 接口部署的服务器
-     */
-    private final static String API_SERVER_ADDRESS = "https://gateway.freefish.love";
+    @Resource
+    private ApiClientConfig apiClientConfig;
 
     /**
      * 请求白名单
@@ -136,7 +136,15 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
                 throw new BusinessException(ErrorCode.OPERATION_ERROR, "积分不足");
             }
             String method = Objects.requireNonNull(request.getMethod()).toString();
-            String uri = API_SERVER_ADDRESS + request.getPath().toString().trim();
+
+            String gatewayHost;
+            if (apiClientConfig.getHost() != null) {
+                gatewayHost = apiClientConfig.getHost();
+            } else {
+                // your gateway
+                gatewayHost = "https://gateway.freefish.love";
+            }
+            String uri = gatewayHost + request.getPath().toString().trim();
 
             if (StringUtils.isAnyBlank(uri, method)) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR);
