@@ -37,6 +37,7 @@
 - Spring Boot Starter（SDK 开发）
 - Swagger + Knife4j 接口文档
 - Spring Session Redis 分布式登录
+- Redisson 分布式限流
 - Apache Commons Lang3 工具类
 - MyBatis-Plus 及 MyBatis X 自动生成
 - Hutool、Apache Common Utils、Gson 等工具库
