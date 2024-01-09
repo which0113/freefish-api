@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.which.api.manager.RedissonManager;
 import com.which.api.mapper.UserMapper;
 import com.which.api.model.dto.user.UserRegisterRequest;
 import com.which.api.model.entity.User;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Random;
 
+import static com.which.api.constant.RedisConstant.USER_CURD_KEY;
 import static com.which.api.constant.UserConstant.*;
 
 /**
@@ -39,6 +41,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private RedissonManager redissonManager;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -73,41 +78,44 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "两次输入的密码不一致");
         }
         // 账户不能重复
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userAccount", userAccount);
-        long count = userMapper.selectCount(queryWrapper);
-        if (count > 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
-        }
-        User invitationCodeUser = null;
-        if (StringUtils.isNotBlank(invitationCode)) {
-            LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            userLambdaQueryWrapper.eq(User::getInvitationCode, invitationCode);
-            // 可能出现重复invitationCode,查出的不是一条
-            invitationCodeUser = this.getOne(userLambdaQueryWrapper);
-            if (invitationCodeUser == null) {
-                throw new BusinessException(ErrorCode.OPERATION_ERROR, "该邀请码无效");
+        String redissonLock = (USER_CURD_KEY + "userRegister:" + userAccount).intern();
+        return redissonManager.redissonDistributedLocks(redissonLock, () -> {
+            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("userAccount", userAccount);
+            long count = userMapper.selectCount(queryWrapper);
+            if (count > 0) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
             }
-        }
-        // 2. 加密
-        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
-        // ak/sk
-        String accessKey = DigestUtils.md5DigestAsHex((userAccount + SALT + VOUCHER).getBytes());
-        String secretKey = DigestUtils.md5DigestAsHex((SALT + VOUCHER + userAccount).getBytes());
+            User invitationCodeUser = null;
+            if (StringUtils.isNotBlank(invitationCode)) {
+                LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+                userLambdaQueryWrapper.eq(User::getInvitationCode, invitationCode);
+                // 可能出现重复invitationCode,查出的不是一条
+                invitationCodeUser = this.getOne(userLambdaQueryWrapper);
+                if (invitationCodeUser == null) {
+                    throw new BusinessException(ErrorCode.OPERATION_ERROR, "该邀请码无效");
+                }
+            }
+            // 2. 加密
+            String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+            // ak/sk
+            String accessKey = DigestUtils.md5DigestAsHex((userAccount + SALT + VOUCHER).getBytes());
+            String secretKey = DigestUtils.md5DigestAsHex((SALT + VOUCHER + userAccount).getBytes());
 
-        // 3. 插入数据
-        User user = new User();
-        user.setUserAccount(userAccount);
-        user.setUserPassword(encryptPassword);
-        user.setUserName(userName);
-        user.setAccessKey(accessKey);
-        user.setSecretKey(secretKey);
-        user.setInvitationCode(generateRandomString(8));
-        boolean saveResult = this.save(user);
-        if (!saveResult) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
-        }
-        return user.getId();
+            // 3. 插入数据
+            User user = new User();
+            user.setUserAccount(userAccount);
+            user.setUserPassword(encryptPassword);
+            user.setUserName(userName);
+            user.setAccessKey(accessKey);
+            user.setSecretKey(secretKey);
+            user.setInvitationCode(generateRandomString(8));
+            boolean saveResult = this.save(user);
+            if (!saveResult) {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
+            }
+            return user.getId();
+        }, "注册账号失败");
     }
 
     @Override

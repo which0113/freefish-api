@@ -12,6 +12,7 @@ import com.which.api.annotation.AuthCheck;
 import com.which.api.common.DeleteRequest;
 import com.which.api.common.IdRequest;
 import com.which.api.constant.CommonConstant;
+import com.which.api.manager.RedissonManager;
 import com.which.api.model.dto.interfaceinfo.*;
 import com.which.api.model.entity.User;
 import com.which.api.model.enums.InterfaceStatusEnum;
@@ -40,6 +41,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.which.api.constant.CommonConstant.CRAWLER_NUM;
+import static com.which.api.constant.RedisConstant.RATE_LIMIT_KEY;
 import static com.which.api.constant.UserConstant.ADMIN_ROLE;
 
 /**
@@ -63,6 +65,9 @@ public class InterfaceInfoController {
 
     @Resource
     private ApiService apiService;
+
+    @Resource
+    private RedissonManager redissonManager;
 
     /**
      * 添加接口信息
@@ -356,6 +361,8 @@ public class InterfaceInfoController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         Long id = invokeRequest.getId();
+        // 限流
+        redissonManager.doRateLimit(RATE_LIMIT_KEY + "genChartByAi:" + id);
         InterfaceInfo interfaceInfo = interfaceInfoService.getById(id);
         if (interfaceInfo == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);

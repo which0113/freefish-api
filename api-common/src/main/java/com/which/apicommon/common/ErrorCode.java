@@ -29,6 +29,10 @@ public enum ErrorCode {
      */
     NOT_FOUND_ERROR(40400, "请求数据不存在"),
     /**
+     * 请求过于频繁
+     */
+    TOO_MANY_REQUEST(42900, "请求过于频繁"),
+    /**
      * 禁止访问
      */
     FORBIDDEN_ERROR(40300, "禁止访问"),

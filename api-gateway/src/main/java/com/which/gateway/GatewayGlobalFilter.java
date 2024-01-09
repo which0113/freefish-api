@@ -2,6 +2,7 @@ package com.which.gateway;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
 import com.which.apicommon.model.dto.RequestParamsField;
 import com.which.apicommon.model.emums.InterfaceStatusEnum;
@@ -11,7 +12,7 @@ import com.which.apicommon.service.inner.InnerInterfaceInfoService;
 import com.which.apicommon.service.inner.InnerUserInterfaceInvokeService;
 import com.which.apicommon.service.inner.InnerUserService;
 import com.which.apisdk.config.ApiClientConfig;
-import com.which.gateway.exception.BusinessException;
+import com.which.gateway.manager.RedissonManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -42,6 +43,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.which.apicommon.model.emums.UserAccountStatusEnum.BAN;
 import static com.which.apisdk.utils.SignUtils.getSign;
 import static com.which.gateway.CacheBodyGatewayFilter.CACHE_REQUEST_BODY_OBJECT_KEY;
+import static com.which.gateway.constant.RedisConstant.GATEWAY_SERVER_KEY;
 
 /**
  * 网关全局过滤器
@@ -73,6 +75,9 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
 
     @DubboReference
     private InnerInterfaceInfoService interfaceInfoService;
+
+    @Resource
+    private RedissonManager redissonManager;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -240,10 +245,13 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
                         return super.writeWith(
                                 fluxBody.map(dataBuffer -> {
                                     // 扣除积分
-                                    boolean invoke = interfaceInvokeService.invoke(interfaceInfo.getId(), user.getId(), interfaceInfo.getReduceScore());
-                                    if (!invoke) {
-                                        throw new BusinessException(ErrorCode.OPERATION_ERROR, "接口调用失败");
-                                    }
+                                    String redissonLock = (GATEWAY_SERVER_KEY + "handleResponse:" + user.getUserAccount()).intern();
+                                    redissonManager.redissonDistributedLocks(redissonLock, () -> {
+                                        boolean invoke = interfaceInvokeService.invoke(interfaceInfo.getId(), user.getId(), interfaceInfo.getReduceScore());
+                                        if (!invoke) {
+                                            throw new BusinessException(ErrorCode.OPERATION_ERROR, "接口调用失败");
+                                        }
+                                    }, "接口调用失败");
                                     byte[] content = new byte[dataBuffer.readableByteCount()];
                                     dataBuffer.read(content);
                                     // 释放掉内存
