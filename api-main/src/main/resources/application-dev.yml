@@ -12,11 +12,11 @@ spring:
   # 数据库配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/api_platform
+    url: jdbc:mysql://localhost:3306/api_platform
     username: root
     password: 123456
   redis:
-    host: 127.0.0.1
+    host: localhost
     port: 6379
     password: 123456@Aa
     database: 0
@@ -45,12 +45,12 @@ dubbo:
     port: -1
   registry:
     id: nacos-registry
-    address: nacos://127.0.0.1:8848
+    address: nacos://localhost:8848
 com:
   which:
     client:
       # gateway host/api（仅用于 dev环境）
-      host: http://127.0.0.1:9000/api
+      host: http://localhost:9000/api
 # 对象存储 oss
 alibaba:
   cloud:
