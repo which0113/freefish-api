@@ -44,8 +44,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
             return true;
         }
         UserThreadLocalUtils.set(userVO);
-        // todo USER_LOGIN_TTL: 2 * DAYS
-        redisTemplate.expire(tokenKey, USER_LOGIN_TTL, TimeUnit.MINUTES);
+        redisTemplate.expire(tokenKey, USER_LOGIN_TTL, TimeUnit.DAYS);
         return true;
     }
 

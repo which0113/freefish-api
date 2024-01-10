@@ -357,13 +357,18 @@ public class InterfaceInfoController {
     @PostMapping("/invoke")
     @Transactional(rollbackFor = Exception.class)
     public BaseResponse<Object> invokeInterface(@RequestBody InvokeRequest invokeRequest, HttpServletRequest request) {
-        if (ObjectUtils.anyNull(invokeRequest, invokeRequest.getId()) || invokeRequest.getId() <= 0) {
+        if (invokeRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Long id = invokeRequest.getId();
+        Long interfaceInfoId = invokeRequest.getId();
+        if (interfaceInfoId == null || interfaceInfoId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
         // 限流
-        redissonManager.doRateLimit(RATE_LIMIT_KEY + "invokeInterface:" + id);
-        InterfaceInfo interfaceInfo = interfaceInfoService.getById(id);
+        UserVO loginUser = userService.getLoginUser(request);
+        Long userId = loginUser.getId();
+        redissonManager.doRateLimit(RATE_LIMIT_KEY + "invokeInterface:" + userId);
+        InterfaceInfo interfaceInfo = interfaceInfoService.getById(interfaceInfoId);
         if (interfaceInfo == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
@@ -382,7 +387,7 @@ public class InterfaceInfoController {
         }
         Map<String, Object> params = new Gson().fromJson(requestParams, new TypeToken<Map<String, Object>>() {
         }.getType());
-        UserVO loginUser = userService.getLoginUser(request);
+        // 调用接口
         String accessKey = loginUser.getAccessKey();
         String secretKey = loginUser.getSecretKey();
         try {
