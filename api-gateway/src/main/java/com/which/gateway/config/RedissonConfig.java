@@ -13,7 +13,7 @@ import org.springframework.context.annotation.PropertySource;
  * @author which
  */
 @Configuration
-@PropertySource("classpath:application-dev.yml")
+@PropertySource("classpath:application-prod.yml")
 @ConfigurationProperties(prefix = "spring.redis")
 @Data
 public class RedissonConfig {

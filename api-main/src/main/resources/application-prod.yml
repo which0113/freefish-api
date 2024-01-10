@@ -15,6 +15,11 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/api_platform
     username: api_platform
     password: AEh5xER6r2WW4csc
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 123456@Aa
+    database: 0
 server:
   port: 9001
   servlet:
