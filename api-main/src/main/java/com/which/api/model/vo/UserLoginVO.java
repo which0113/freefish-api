@@ -6,12 +6,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 用户视图（脱敏）
+ * 用户视图token（脱敏）
  *
  * @author which
  */
 @Data
-public class UserVO implements Serializable {
+public class UserLoginVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -70,4 +70,8 @@ public class UserVO implements Serializable {
      * 更新时间
      */
     private Date updateTime;
+    /**
+     * token
+     */
+    private String token;
 }

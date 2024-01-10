@@ -1,19 +1,23 @@
 package com.which.api.manager;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
 import com.which.apicommon.common.ThrowUtils;
+import com.which.apicommon.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.*;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static com.which.api.constant.RedisConstant.RATE_LIMIT_NUM;
-import static com.which.api.constant.RedisConstant.WAIT_TIME;
-
+import static com.which.api.constant.RedisConstant.*;
 
 /**
  * RedissonManager
@@ -26,6 +30,9 @@ public class RedissonManager {
 
     @Resource
     public RedissonClient redissonClient;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 限流操作
@@ -121,6 +128,50 @@ public class RedissonManager {
      */
     public void redissonDistributedLocks(String lockName, Runnable runnable, String errorMessage) {
         redissonDistributedLocks(lockName, runnable, ErrorCode.OPERATION_ERROR, errorMessage);
+    }
+
+    /**
+     * 根据 requset 获取 userVO
+     *
+     * @param tokenKey
+     * @return
+     */
+    public UserVO getUserByTokenKey(String tokenKey) {
+        if (StringUtils.isBlank(tokenKey)) {
+            return null;
+        }
+        Map<Object, Object> userMap = redisTemplate.opsForHash().entries(tokenKey);
+        if (userMap.isEmpty()) {
+            return null;
+        }
+        return BeanUtil.fillBeanWithMap(userMap, new UserVO(), false);
+    }
+
+    /**
+     * 根据 request 获取 userVO
+     *
+     * @param request
+     * @return
+     */
+    public UserVO getUserByRequest(HttpServletRequest request) {
+        return this.getUserByTokenKey(this.getTokenKeyByRequest(request));
+    }
+
+    /**
+     * 根据 request 获取 tokenKey
+     *
+     * @param request
+     * @return
+     */
+    public String getTokenKeyByRequest(HttpServletRequest request) {
+        if (request == null) {
+            return null;
+        }
+        String token = request.getHeader("token");
+        if (StringUtils.isBlank(token)) {
+            return null;
+        }
+        return USER_LOGIN_KEY + token;
     }
 
 }

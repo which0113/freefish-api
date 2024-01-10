@@ -1,5 +1,6 @@
 package com.which.api.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -7,17 +8,20 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.which.api.manager.RedissonManager;
 import com.which.api.mapper.UserMapper;
+import com.which.api.model.dto.user.UserLoginRequest;
 import com.which.api.model.dto.user.UserRegisterRequest;
 import com.which.api.model.entity.User;
 import com.which.api.model.enums.UserStatusEnum;
-import com.which.api.model.vo.UserVO;
+import com.which.api.model.vo.UserLoginVO;
 import com.which.api.service.UserService;
 import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
+import com.which.apicommon.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -25,9 +29,11 @@ import org.springframework.util.DigestUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
-import static com.which.api.constant.RedisConstant.USER_CURD_KEY;
+import static com.which.api.constant.RedisConstant.*;
 import static com.which.api.constant.UserConstant.*;
 
 /**
@@ -44,6 +50,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Resource
     private RedissonManager redissonManager;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -86,7 +95,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (count > 0) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
             }
-            User invitationCodeUser = null;
+            User invitationCodeUser;
             if (StringUtils.isNotBlank(invitationCode)) {
                 LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
                 userLambdaQueryWrapper.eq(User::getInvitationCode, invitationCode);
@@ -119,8 +128,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public UserVO userLogin(String userAccount, String userPassword, HttpServletRequest request) {
-        // 1. 校验
+    public UserLoginVO userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request) {
+        // 1 校验
+        String userAccount = userLoginRequest.getUserAccount();
+        String userPassword = userLoginRequest.getUserPassword();
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
@@ -130,13 +141,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (userPassword.length() < 8) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短,不能低于8位字符");
         }
-        //  5. 账户不包含特殊字符
-        // 匹配由数字、小写字母、大写字母组成的字符串,且字符串的长度至少为1个字符
+        // 账户不包含特殊字符，匹配由数字、小写字母、大写字母组成的字符串，且字符串的长度至少为1个字符
         String pattern = "[0-9a-zA-Z]+";
         if (!userAccount.matches(pattern)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号需由数字、小写字母、大写字母组成");
         }
-        // 2. 加密
+        // 2 加密
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
         // 查询用户是否存在
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -145,24 +155,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = userMapper.selectOne(queryWrapper);
         // 用户不存在
         if (user == null) {
-            log.info("user login failed, userAccount cannot match userPassword");
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
         }
         if (user.getStatus().equals(UserStatusEnum.BAN.getValue())) {
             throw new BusinessException(ErrorCode.PROHIBITED, "账号已封禁");
         }
+        // 3 记录用户的登录态到redis
+        // 3.1 生成128位的token
+        String token = this.generateRandomString(128);
+        String tokenKey = USER_LOGIN_KEY + token;
+        // 3.2 保存userVO到redis缓存
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
-        // 3. 记录用户的登录态
-        request.getSession().setAttribute(USER_LOGIN_STATE, userVO);
-        return userVO;
+        Map<String, Object> userMap = BeanUtil.beanToMap(userVO);
+        redisTemplate.opsForHash().putAll(tokenKey, userMap);
+        redisTemplate.expire(tokenKey, USER_LOGIN_TTL, TimeUnit.DAYS);
+        // 4 设置token响应前端
+        UserLoginVO userLoginVO = new UserLoginVO();
+        BeanUtils.copyProperties(userVO, userLoginVO);
+        userLoginVO.setToken(token);
+        return userLoginVO;
     }
 
     @Override
     public UserVO getLoginUser(HttpServletRequest request) {
         // 先判断是否已登录
-        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        UserVO currentUser = (UserVO) userObj;
+        UserVO currentUser = redissonManager.getUserByRequest(request);
         if (currentUser == null || currentUser.getId() == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
@@ -182,8 +200,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean isAdmin(HttpServletRequest request) {
-        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        UserVO currentUser = (UserVO) userObj;
+        UserVO currentUser = redissonManager.getUserByRequest(request);
         if (currentUser == null || currentUser.getId() == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
@@ -195,8 +212,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public User isTourist(HttpServletRequest request) {
-        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        UserVO currentUser = (UserVO) userObj;
+        UserVO currentUser = redissonManager.getUserByRequest(request);
         if (currentUser == null || currentUser.getId() == null) {
             return null;
         }
@@ -207,11 +223,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean userLogout(HttpServletRequest request) {
-        if (request.getSession().getAttribute(USER_LOGIN_STATE) == null) {
+        UserVO currentUser = redissonManager.getUserByRequest(request);
+        if (currentUser == null) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "未登录");
         }
         // 移除登录态
-        request.getSession().removeAttribute(USER_LOGIN_STATE);
+        String tokenKey = redissonManager.getTokenKeyByRequest(request);
+        redisTemplate.opsForHash().delete(tokenKey);
         return true;
     }
 

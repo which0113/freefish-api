@@ -6,11 +6,11 @@ import com.which.api.model.dto.file.UploadFileRequest;
 import com.which.api.model.enums.FileUploadBizEnum;
 import com.which.api.model.enums.ImageStatusEnum;
 import com.which.api.model.vo.ImageVO;
-import com.which.api.model.vo.UserVO;
 import com.which.api.service.UserService;
 import com.which.apicommon.common.BaseResponse;
 import com.which.apicommon.common.ErrorCode;
 import com.which.apicommon.common.ResultUtils;
+import com.which.apicommon.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.Arrays;
 
+import static com.which.api.constant.CommonConstant.ONE_M;
 import static com.which.api.constant.CommonConstant.OSS_HOST;
 
 /**
@@ -35,8 +36,6 @@ import static com.which.api.constant.CommonConstant.OSS_HOST;
 @RequestMapping("/file")
 @Slf4j
 public class FileController {
-
-    final long ONE_M = 1024 * 1024L;
 
     @Resource
     private UserService userService;

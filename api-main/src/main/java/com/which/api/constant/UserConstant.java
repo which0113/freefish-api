@@ -6,10 +6,6 @@ package com.which.api.constant;
  * @author which
  */
 public interface UserConstant {
-    /**
-     * 用户登录态键
-     */
-    String USER_LOGIN_STATE = "user_login";
 
     /**
      * 默认角色
@@ -30,5 +26,10 @@ public interface UserConstant {
      * ak/sk 混淆
      */
     String VOUCHER = "accessKey_secretKey";
+
+    /**
+     * 预检请求
+     */
+    String OPTIONS = "OPTIONS";
 
 }

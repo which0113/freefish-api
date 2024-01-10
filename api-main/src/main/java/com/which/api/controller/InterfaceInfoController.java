@@ -16,7 +16,6 @@ import com.which.api.manager.RedissonManager;
 import com.which.api.model.dto.interfaceinfo.*;
 import com.which.api.model.entity.User;
 import com.which.api.model.enums.InterfaceStatusEnum;
-import com.which.api.model.vo.UserVO;
 import com.which.api.service.InterfaceInfoService;
 import com.which.api.service.UserService;
 import com.which.apicommon.common.BaseResponse;
@@ -24,6 +23,7 @@ import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
 import com.which.apicommon.common.ResultUtils;
 import com.which.apicommon.model.entity.InterfaceInfo;
+import com.which.apicommon.model.vo.UserVO;
 import com.which.apisdk.client.ApiClient;
 import com.which.apisdk.model.request.CurrencyRequest;
 import com.which.apisdk.model.response.ResultResponse;
@@ -362,7 +362,7 @@ public class InterfaceInfoController {
         }
         Long id = invokeRequest.getId();
         // 限流
-        redissonManager.doRateLimit(RATE_LIMIT_KEY + "genChartByAi:" + id);
+        redissonManager.doRateLimit(RATE_LIMIT_KEY + "invokeInterface:" + id);
         InterfaceInfo interfaceInfo = interfaceInfoService.getById(id);
         if (interfaceInfo == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
@@ -386,7 +386,6 @@ public class InterfaceInfoController {
         String accessKey = loginUser.getAccessKey();
         String secretKey = loginUser.getSecretKey();
         try {
-            // todo 需要改为自己的 ApiClient
             ApiClient apiClient = new ApiClient(accessKey, secretKey);
             CurrencyRequest currencyRequest = new CurrencyRequest();
             currencyRequest.setMethod(interfaceInfo.getMethod());

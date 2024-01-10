@@ -14,12 +14,13 @@ import com.which.api.model.dto.user.email.UserEmailRegisterRequest;
 import com.which.api.model.dto.user.email.UserUnBindEmailRequest;
 import com.which.api.model.entity.User;
 import com.which.api.model.enums.UserStatusEnum;
-import com.which.api.model.vo.UserVO;
+import com.which.api.model.vo.UserLoginVO;
 import com.which.api.service.UserService;
 import com.which.apicommon.common.BaseResponse;
 import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
 import com.which.apicommon.common.ResultUtils;
+import com.which.apicommon.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -70,7 +71,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public BaseResponse<UserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
+    public BaseResponse<UserLoginVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
         if (userLoginRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -79,7 +80,7 @@ public class UserController {
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        UserVO user = userService.userLogin(userAccount, userPassword, request);
+        UserLoginVO user = userService.userLogin(userLoginRequest, request);
         return ResultUtils.success(user);
     }
 

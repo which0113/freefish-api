@@ -1,11 +1,11 @@
-package com.which.api.aop;
+package com.which.api.interceptor;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.which.api.annotation.AuthCheck;
-import com.which.api.model.vo.UserVO;
 import com.which.api.service.UserService;
 import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
+import com.which.apicommon.model.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

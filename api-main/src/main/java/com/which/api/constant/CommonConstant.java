@@ -32,4 +32,9 @@ public interface CommonConstant {
      */
     String BUCKET_NAME = "freefish-api";
 
+    /**
+     * 1M
+     */
+    Long ONE_M = 1024 * 1024L;
+
 }

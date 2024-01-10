@@ -18,13 +18,23 @@ public interface RedisConstant {
     String USER_CURD_KEY = "userCRUD:";
 
     /**
-     * 限流请求数量
+     * 用户登录
      */
-    Long RATE_LIMIT_NUM = 1L;
+    String USER_LOGIN_KEY = "userLogin:token:";
 
     /**
-     * 等待时长
+     * 限流请求数量（每秒 3 次）
+     */
+    Long RATE_LIMIT_NUM = 3L;
+
+    /**
+     * 获取分布式锁自旋时长
      */
     Long WAIT_TIME = 1000L;
+
+    /**
+     * 用户登录TTL（1天）
+     */
+    Long USER_LOGIN_TTL = 1L;
 
 }

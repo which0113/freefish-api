@@ -1,9 +1,11 @@
 package com.which.api.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.which.api.model.dto.user.UserLoginRequest;
 import com.which.api.model.dto.user.UserRegisterRequest;
 import com.which.api.model.entity.User;
-import com.which.api.model.vo.UserVO;
+import com.which.api.model.vo.UserLoginVO;
+import com.which.apicommon.model.vo.UserVO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,12 +27,11 @@ public interface UserService extends IService<User> {
     /**
      * 用户登录
      *
-     * @param userAccount  用户账户
-     * @param userPassword 用户密码
      * @param request
+     * @param userLoginRequest 用户账户
      * @return 脱敏后的用户信息
      */
-    UserVO userLogin(String userAccount, String userPassword, HttpServletRequest request);
+    UserLoginVO userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request);
 
     /**
      * 获取当前登录用户
