@@ -29,7 +29,7 @@
 
 ## 网站导航
 
-- **[咸鱼-API 接口开放平台 🔗](https://www.freefish.love)**
+- **[咸鱼-API 平台 🔗](https://www.freefish.love)**
 
 ## 技术栈
 
