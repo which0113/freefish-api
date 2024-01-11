@@ -44,7 +44,7 @@ public class RedissonManager {
         rateLimiter.trySetRate(RateType.OVERALL, RATE_LIMIT_NUM, 1, RateIntervalUnit.SECONDS);
         // 每当一个操作来了后，请求一个令牌
         boolean canOp = rateLimiter.tryAcquire(1);
-        ThrowUtils.throwIf(!canOp, ErrorCode.TOO_MANY_REQUEST);
+        ThrowUtils.throwIf(!canOp, ErrorCode.REQUEST_ERROR);
     }
 
     /**

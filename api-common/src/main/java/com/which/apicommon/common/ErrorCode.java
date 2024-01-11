@@ -31,7 +31,7 @@ public enum ErrorCode {
     /**
      * 请求过于频繁
      */
-    TOO_MANY_REQUEST(42900, "请求过于频繁"),
+    REQUEST_ERROR(42900, "请求过于频繁"),
     /**
      * 禁止访问
      */
