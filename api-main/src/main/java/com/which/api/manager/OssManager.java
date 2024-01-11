@@ -34,7 +34,7 @@ public class OssManager {
             // 创建PutObjectRequest对象
             PutObjectRequest putObjectRequest = new PutObjectRequest(BUCKET_NAME, key, new File(localFilePath));
             ossClient.putObject(putObjectRequest);
-            log.info("上传文件成功！");
+            log.info("上传文件成功");
         } catch (Exception e) {
             log.error("上传文件失败：{}", e.getMessage());
         }
@@ -51,7 +51,7 @@ public class OssManager {
         try {
             PutObjectRequest putObjectRequest = new PutObjectRequest(BUCKET_NAME, key, file);
             ossClient.putObject(putObjectRequest);
-            log.info("上传文件成功！");
+            log.info("上传文件成功");
         } catch (Exception e) {
             log.error("上传文件失败：{}", e.getMessage());
         }

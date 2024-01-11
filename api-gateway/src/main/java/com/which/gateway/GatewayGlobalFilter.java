@@ -119,7 +119,7 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
         long currentTime = System.currentTimeMillis() / 1000;
         assert timestamp != null;
         if (currentTime - Long.parseLong(timestamp) >= FIVE_MINUTES) {
-            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR, "会话已过期,请重试！");
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR, "会话已过期，请重试");
         }
         try {
             UserVO user = innerUserService.getInvokeUserByAccessKey(accessKey);

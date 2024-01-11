@@ -57,7 +57,7 @@ public class FileController {
         FileUploadBizEnum fileUploadBizEnum = FileUploadBizEnum.getEnumByValue(biz);
         ImageVO imageVO = new ImageVO();
         if (fileUploadBizEnum == null) {
-            return uploadError(imageVO, multipartFile, "上传失败,情重试.");
+            return uploadError(imageVO, multipartFile, "上传失败，请重试.");
         }
         String result = validFile(multipartFile, fileUploadBizEnum);
         if (!"success".equals(result)) {
@@ -83,7 +83,7 @@ public class FileController {
             return ResultUtils.success(imageVO);
         } catch (Exception e) {
             log.error("file upload error, filepath = " + filepath, e);
-            return uploadError(imageVO, multipartFile, "上传失败,情重试");
+            return uploadError(imageVO, multipartFile, "上传失败，请重试");
         } finally {
             if (file != null) {
                 // 删除临时文件

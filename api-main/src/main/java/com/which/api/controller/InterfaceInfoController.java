@@ -404,7 +404,7 @@ public class InterfaceInfoController {
     }
 
     /**
-     * 更新接口图片（url）
+     * 更新接口图片
      *
      * @param interfaceInfoUpdateAvatarRequest
      * @return
@@ -412,12 +412,7 @@ public class InterfaceInfoController {
     @PostMapping("/updateInterfaceInfoAvatar")
     @AuthCheck(mustRole = ADMIN_ROLE)
     public BaseResponse<Boolean> updateInterfaceInfoAvatarUrl(@RequestBody InterfaceInfoUpdateAvatarRequest interfaceInfoUpdateAvatarRequest) {
-        if (ObjectUtils.anyNull(interfaceInfoUpdateAvatarRequest, interfaceInfoUpdateAvatarRequest.getId()) || interfaceInfoUpdateAvatarRequest.getId() <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        InterfaceInfo interfaceInfo = new InterfaceInfo();
-        BeanUtils.copyProperties(interfaceInfoUpdateAvatarRequest, interfaceInfo);
-        return ResultUtils.success(interfaceInfoService.updateById(interfaceInfo));
+        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 
 }

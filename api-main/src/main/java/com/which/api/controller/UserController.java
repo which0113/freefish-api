@@ -345,7 +345,7 @@ public class UserController {
      */
     @PostMapping("/email/login")
     public BaseResponse<UserVO> userEmailLogin(@RequestBody UserEmailLoginRequest userEmailLoginRequest, HttpServletRequest request) {
-        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中！");
+        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 
     /**
@@ -357,7 +357,7 @@ public class UserController {
      */
     @PostMapping("/bind/login")
     public BaseResponse<UserVO> userBindEmail(@RequestBody UserBindEmailRequest userBindEmailRequest, HttpServletRequest request) {
-        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中！");
+        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 
     /**
@@ -369,7 +369,7 @@ public class UserController {
      */
     @PostMapping("/unbindEmail")
     public BaseResponse<UserVO> userUnBindEmail(@RequestBody UserUnBindEmailRequest userUnBindEmailRequest, HttpServletRequest request) {
-        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中！");
+        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 
     /**
@@ -380,7 +380,7 @@ public class UserController {
      */
     @PostMapping("/email/register")
     public BaseResponse<Long> userEmailRegister(@RequestBody UserEmailRegisterRequest userEmailRegisterRequest) {
-        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中！");
+        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 
     /**
@@ -391,7 +391,7 @@ public class UserController {
      */
     @GetMapping("/getCaptcha")
     public BaseResponse<Boolean> getCaptcha(String emailAccount) {
-        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中！");
+        throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 
 }
