@@ -94,43 +94,6 @@ public class RedissonManager {
     }
 
     /**
-     * redisson分布式锁
-     *
-     * @param lockName     锁名称
-     * @param runnable     可运行
-     * @param errorCode    错误代码
-     * @param errorMessage 错误消息
-     */
-    public void redissonDistributedLocks(String lockName, Runnable runnable, ErrorCode errorCode, String errorMessage) {
-        RLock rLock = redissonClient.getLock(lockName);
-        try {
-            if (rLock.tryLock(WAIT_TIME, -1, TimeUnit.MILLISECONDS)) {
-                runnable.run();
-            } else {
-                throw new BusinessException(errorCode.getCode(), errorMessage);
-            }
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.OPERATION_ERROR, e.getMessage());
-        } finally {
-            if (rLock.isHeldByCurrentThread()) {
-                log.info("lockName:{},unLockId:{} ", lockName, Thread.currentThread().getId());
-                rLock.unlock();
-            }
-        }
-    }
-
-    /**
-     * redisson分布式锁
-     *
-     * @param lockName     锁名称
-     * @param runnable     可运行
-     * @param errorMessage 错误消息
-     */
-    public void redissonDistributedLocks(String lockName, Runnable runnable, String errorMessage) {
-        redissonDistributedLocks(lockName, runnable, ErrorCode.OPERATION_ERROR, errorMessage);
-    }
-
-    /**
      * 根据 requset 获取 userVO
      *
      * @param tokenKey

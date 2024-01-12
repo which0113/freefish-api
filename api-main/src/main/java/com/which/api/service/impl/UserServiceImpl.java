@@ -229,7 +229,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         // 移除登录态
         String tokenKey = redissonManager.getTokenKeyByRequest(request);
-        redisTemplate.opsForHash().delete(tokenKey);
+        redisTemplate.delete(tokenKey);
         return true;
     }
 
