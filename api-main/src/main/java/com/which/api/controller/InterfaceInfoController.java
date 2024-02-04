@@ -156,12 +156,12 @@ public class InterfaceInfoController {
         }
         InterfaceInfo interfaceInfo = new InterfaceInfo();
         if (CollectionUtils.isNotEmpty(interfaceInfoUpdateRequest.getRequestParams())) {
-            List<RequestParamsField> requestParamsFields = interfaceInfoUpdateRequest.getRequestParams().stream().filter(field -> org.apache.commons.lang3.StringUtils.isNotBlank(field.getFieldName())).collect(Collectors.toList());
+            List<RequestParamsField> requestParamsFields = interfaceInfoUpdateRequest.getRequestParams().stream().filter(field -> StringUtils.isNotBlank(field.getFieldName())).collect(Collectors.toList());
             String requestParams = JSONUtil.toJsonStr(requestParamsFields);
             interfaceInfo.setRequestParams(requestParams);
         }
         if (CollectionUtils.isNotEmpty(interfaceInfoUpdateRequest.getResponseParams())) {
-            List<ResponseParamsField> responseParamsFields = interfaceInfoUpdateRequest.getResponseParams().stream().filter(field -> org.apache.commons.lang3.StringUtils.isNotBlank(field.getFieldName())).collect(Collectors.toList());
+            List<ResponseParamsField> responseParamsFields = interfaceInfoUpdateRequest.getResponseParams().stream().filter(field -> StringUtils.isNotBlank(field.getFieldName())).collect(Collectors.toList());
             String responseParams = JSONUtil.toJsonStr(responseParamsFields);
             interfaceInfo.setResponseParams(responseParams);
         }
@@ -217,13 +217,16 @@ public class InterfaceInfoController {
         long size = interfaceInfoQueryRequest.getPageSize();
         long current = interfaceInfoQueryRequest.getCurrent();
         String sortField = interfaceInfoQueryRequest.getSortField();
+        if (StringUtils.isBlank(sortField)) {
+            sortField = "totalInvokes";
+        }
         String sortOrder = interfaceInfoQueryRequest.getSortOrder();
 
         QueryWrapper<InterfaceInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(org.apache.commons.lang3.StringUtils.isNotBlank(searchText), "name", searchText)
+        queryWrapper.like(StringUtils.isNotBlank(searchText), "name", searchText)
                 .or()
-                .like(org.apache.commons.lang3.StringUtils.isNotBlank(searchText), "description", searchText);
-        queryWrapper.orderBy(org.apache.commons.lang3.StringUtils.isNotBlank(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
+                .like(StringUtils.isNotBlank(searchText), "description", searchText);
+        queryWrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_DESC), sortField);
         Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size), queryWrapper);
         // 不是管理员只能查看已经上线的
         if (!userService.isAdmin(request)) {
