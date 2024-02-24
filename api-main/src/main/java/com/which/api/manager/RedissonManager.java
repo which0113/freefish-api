@@ -75,7 +75,7 @@ public class RedissonManager {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, e.getMessage());
         } finally {
             if (rLock.isHeldByCurrentThread()) {
-                log.error("unLock: " + Thread.currentThread().getId());
+                log.info("unLock: " + Thread.currentThread().getId());
                 rLock.unlock();
             }
         }
