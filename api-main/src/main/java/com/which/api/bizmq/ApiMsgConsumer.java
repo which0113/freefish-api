@@ -46,12 +46,14 @@ public class ApiMsgConsumer {
     @Transactional(rollbackFor = Exception.class)
     public void receiveMessage(String message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag) {
         if (StringUtils.isBlank(message)) {
+            channel.basicNack(deliveryTag, false, false);
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "MQ消息为空");
         }
         Long userId = Long.parseLong(message);
         User user = userService.getById(userId);
         String userRole = user.getUserRole();
         if (StringUtils.isBlank(userRole)) {
+            channel.basicNack(deliveryTag, false, false);
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "用户角色为空");
         }
         // 如果用户角色不为游客，代表已登录激活账号
