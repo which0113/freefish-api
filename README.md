@@ -37,6 +37,7 @@
 - Spring MVC
 - MySQL 数据库
 - Dubbo 分布式（RPC、Nacos）
+- RabbitMQ 消息队列
 - Spring Cloud Gateway 微服务网关
 - API 签名认证（Http 调用）
 - Spring Boot Starter（SDK 开发）
