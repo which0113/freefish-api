@@ -1,11 +1,10 @@
-### @author which ###
-###   ###
-
+### Custom Template
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+**/resources/application-prod.yml
 
 ### STS ###
 .apt_generated
