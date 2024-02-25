@@ -15,7 +15,7 @@ create table if not exists user (
     userAvatar     varchar(1024)                          null comment '用户头像',
     email          varchar(256)                           null comment '邮箱',
     gender         varchar(10)                            null comment '性别 0-男 1-女 2-保密',
-    userRole       varchar(256) default 'user'            not null comment '用户角色：user / admin',
+    userRole       varchar(256) default 'visitor'         not null comment '用户角色：visitor / user / admin',
     userPassword   varchar(512)                           null comment '密码',
     accessKey      varchar(256)                           null comment 'accessKey',
     secretKey      varchar(256)                           null comment 'secretKey',

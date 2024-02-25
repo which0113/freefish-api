@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.which.api.bizmq.ApiMsgProducer;
 import com.which.api.manager.RedissonManager;
 import com.which.api.mapper.UserMapper;
 import com.which.api.model.dto.user.UserLoginRequest;
 import com.which.api.model.dto.user.UserRegisterRequest;
 import com.which.api.model.entity.User;
+import com.which.api.model.enums.UserRoleEnum;
 import com.which.api.model.enums.UserStatusEnum;
 import com.which.api.model.vo.UserLoginVO;
 import com.which.api.service.UserService;
@@ -53,6 +55,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Resource
+    private ApiMsgProducer apiMsgProducer;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -123,11 +128,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
             }
-            return user.getId();
+            Long userId = user.getId();
+            // 防止MQ消息发送失败导致事务回滚
+            try {
+                apiMsgProducer.sendMessage(userId);
+                log.info("消息发送MQ成功，userId：{}", userId);
+            } catch (Exception e) {
+                log.error("消息发送MQ失败：{}", e.getMessage());
+            }
+            return userId;
         }, "注册账号失败");
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public UserLoginVO userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request) {
         // 1 校验
         String userAccount = userLoginRequest.getUserAccount();
@@ -159,6 +173,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         if (user.getStatus().equals(UserStatusEnum.BAN.getValue())) {
             throw new BusinessException(ErrorCode.PROHIBITED, "账号已封禁");
+        }
+        // 设置用户登录后的角色为 USER
+        user.setUserRole(UserRoleEnum.USER.getValue());
+        int update = userMapper.updateById(user);
+        if (update == 0) {
+            log.error("账号更新异常，userId：{}", user.getId());
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "登录异常");
         }
         // 3 记录用户的登录态到redis
         // 3.1 生成128位的token

@@ -32,7 +32,7 @@ public class UserQueryRequest extends PageRequest implements Serializable {
      */
     private String gender;
     /**
-     * 用户角色: user, admin
+     * 用户角色: 用户角色：visitor / user / admin
      */
     private String userRole;
 }

@@ -20,6 +20,12 @@ spring:
     port: 6379
     password: 123456@Aa
     database: 0
+  rabbitmq:
+    host: centos
+    port: 5672
+    username: hjc
+    password: 123456
+    virtual-host: /api
 server:
   port: 9001
   servlet:

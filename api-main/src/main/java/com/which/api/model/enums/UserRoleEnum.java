@@ -7,26 +7,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 用户状态枚举
+ * 用户角色枚举
  *
  * @author which
  */
-public enum UserStatusEnum {
+public enum UserRoleEnum {
 
     /**
-     * 正常
+     * 游客
      */
-    NORMAL("正常", 0),
+    VISITOR("游客", "visitor"),
     /**
-     * 封号
+     * 用户
      */
-    BAN("封禁", 1);
+    USER("用户", "user"),
+    /**
+     * 管理员
+     */
+    ADMIN("管理员", "admin");
 
     private final String text;
 
-    private final Integer value;
+    private final String value;
 
-    UserStatusEnum(String text, Integer value) {
+    UserRoleEnum(String text, String value) {
         this.text = text;
         this.value = value;
     }
@@ -36,7 +40,7 @@ public enum UserStatusEnum {
      *
      * @return
      */
-    public static List<Integer> getValues() {
+    public static List<String> getValues() {
         return Arrays.stream(values()).map(item -> item.value).collect(Collectors.toList());
     }
 
@@ -46,11 +50,11 @@ public enum UserStatusEnum {
      * @param value
      * @return
      */
-    public static UserStatusEnum getEnumByValue(Integer value) {
+    public static UserRoleEnum getEnumByValue(String value) {
         if (ObjectUtils.isEmpty(value)) {
             return null;
         }
-        for (UserStatusEnum anEnum : UserStatusEnum.values()) {
+        for (UserRoleEnum anEnum : UserRoleEnum.values()) {
             if (anEnum.value.equals(value)) {
                 return anEnum;
             }
@@ -58,7 +62,7 @@ public enum UserStatusEnum {
         return null;
     }
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
