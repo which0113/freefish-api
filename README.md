@@ -42,7 +42,7 @@
 - API 签名认证（Http 调用）
 - Spring Boot Starter（SDK 开发）
 - Swagger + Knife4j 接口文档
-- ThreadLocal Redis 双token权限校验
+- ThreadLocal Redis（Token 权限校验和续签）
 - Redisson 分布式限流
 - Apache Commons Lang3 工具类
 - MyBatis-Plus 及 MyBatis X 自动生成
