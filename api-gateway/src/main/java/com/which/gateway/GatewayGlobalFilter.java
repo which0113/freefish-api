@@ -146,8 +146,8 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
             if (apiClientConfig.getHost() != null) {
                 gatewayHost = apiClientConfig.getHost();
             } else {
-                // your gateway
-                gatewayHost = "https://gateway.freefish.love";
+                // your gateway/api
+                gatewayHost = "https://api.freefish.love";
             }
             String uri = gatewayHost + request.getPath().toString().trim();
 
