@@ -18,7 +18,7 @@ spring:
   redis:
     host: localhost
     port: 6379
-    password: 123456@Aa
+    password: 123456
     database: 0
   rabbitmq:
     host: centos
