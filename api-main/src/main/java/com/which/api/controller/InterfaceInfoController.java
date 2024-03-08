@@ -297,6 +297,13 @@ public class InterfaceInfoController {
                 .eq(ObjectUtils.isNotEmpty(status), "status", status)
                 .eq(ObjectUtils.isNotEmpty(reduceScore), "reduceScore", reduceScore);
         queryWrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
+        queryWrapper.select("id",
+                "name",
+                "description",
+                "status",
+                "totalInvokes",
+                "avatarUrl"
+        );
         Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size), queryWrapper);
         User user = userService.isTourist(request);
         // 不是管理员只能查看已经上线的
