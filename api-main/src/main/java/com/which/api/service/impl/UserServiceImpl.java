@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.which.api.bizmq.ApiMsgProducer;
 import com.which.api.manager.RedissonManager;
 import com.which.api.mapper.UserMapper;
 import com.which.api.model.dto.user.UserLoginRequest;
@@ -56,8 +55,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    @Resource
-    private ApiMsgProducer apiMsgProducer;
+/*    @Resource
+    private ApiMsgProducer apiMsgProducer;*/
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -131,12 +130,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
             Long userId = user.getId();
             // 防止MQ消息发送失败导致事务回滚
-            try {
-                apiMsgProducer.sendMessage(userId);
-                log.info("消息发送MQ成功，userId：{}", userId);
-            } catch (Exception e) {
-                log.error("消息发送MQ失败：{}", e.getMessage());
-            }
+//            try {
+//                apiMsgProducer.sendMessage(userId);
+//                log.info("消息发送MQ成功，userId：{}", userId);
+//            } catch (Exception e) {
+//                log.error("消息发送MQ失败：{}", e.getMessage());
+//            }
             return userId;
         }, "注册账号失败");
     }

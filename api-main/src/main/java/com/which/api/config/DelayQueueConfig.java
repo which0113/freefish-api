@@ -2,7 +2,6 @@ package com.which.api.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import static com.which.api.constant.MqConstant.*;
 
@@ -11,7 +10,7 @@ import static com.which.api.constant.MqConstant.*;
  *
  * @author which
  */
-@Configuration
+//@Configuration
 public class DelayQueueConfig {
 
     @Bean
