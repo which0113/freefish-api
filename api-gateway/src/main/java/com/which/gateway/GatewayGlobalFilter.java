@@ -137,9 +137,6 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
             if (!getSign(body, user.getSecretKey()).equals(sign)) {
                 throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "非法请求");
             }
-            if (user.getBalance() <= 0) {
-                throw new BusinessException(ErrorCode.OPERATION_ERROR, "积分不足");
-            }
             String method = Objects.requireNonNull(request.getMethod()).toString();
 
             String gatewayHost;
@@ -155,9 +152,11 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR);
             }
             InterfaceInfo interfaceInfo = interfaceInfoService.getInterfaceInfo(uri, method);
-
             if (interfaceInfo == null) {
                 throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "接口不存在");
+            }
+            if (user.getBalance() < interfaceInfo.getReduceScore()) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "积分不足");
             }
             if (interfaceInfo.getStatus() == InterfaceStatusEnum.AUDITING.getValue()) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口审核中");
@@ -247,9 +246,6 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
                                     // 扣除积分
                                     String redissonLock = (GATEWAY_SERVER_KEY + "handleResponse:" + user.getUserAccount()).intern();
                                     redissonManager.redissonDistributedLocks(redissonLock, () -> {
-                                        if (user.getBalance() <= 0) {
-                                            throw new BusinessException(ErrorCode.OPERATION_ERROR, "积分不足");
-                                        }
                                         boolean invoke = interfaceInvokeService.invoke(interfaceInfo.getId(), user.getId(), interfaceInfo.getReduceScore());
                                         if (!invoke) {
                                             throw new BusinessException(ErrorCode.OPERATION_ERROR, "接口调用失败");

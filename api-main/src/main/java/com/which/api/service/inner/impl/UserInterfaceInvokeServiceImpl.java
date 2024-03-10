@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.which.api.mapper.UserInterfaceInvokeMapper;
+import com.which.api.model.entity.User;
 import com.which.api.model.entity.UserInterfaceInvoke;
 import com.which.api.service.InterfaceInfoService;
 import com.which.api.service.UserService;
@@ -31,6 +32,13 @@ public class UserInterfaceInvokeServiceImpl extends ServiceImpl<UserInterfaceInv
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean invoke(Long interfaceInfoId, Long userId, Long reduceScore) {
+        User user = userService.getById(userId);
+        if (user == null) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "账号不存在");
+        }
+        if (user.getBalance() < reduceScore) {
+            throw new BusinessException(ErrorCode.OPERATION_ERROR, "积分不足");
+        }
         LambdaQueryWrapper<UserInterfaceInvoke> invokeLambdaQueryWrapper = new LambdaQueryWrapper<>();
         invokeLambdaQueryWrapper.eq(UserInterfaceInvoke::getInterfaceId, interfaceInfoId);
         invokeLambdaQueryWrapper.eq(UserInterfaceInvoke::getUserId, userId);
