@@ -124,6 +124,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setAccessKey(accessKey);
             user.setSecretKey(secretKey);
             user.setInvitationCode(generateRandomString(8));
+            user.setUserRole(UserRoleEnum.USER.getValue());
             boolean saveResult = this.save(user);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
@@ -174,8 +175,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (user.getStatus().equals(UserStatusEnum.BAN.getValue())) {
             throw new BusinessException(ErrorCode.PROHIBITED, "账号已封禁");
         }
-        // 设置用户登录后的角色为 USER
-        user.setUserRole(UserRoleEnum.USER.getValue());
         int update = userMapper.updateById(user);
         if (update == 0) {
             log.error("账号更新异常，userId：{}", user.getId());
