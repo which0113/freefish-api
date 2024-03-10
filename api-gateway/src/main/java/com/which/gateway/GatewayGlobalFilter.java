@@ -247,6 +247,9 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
                                     // 扣除积分
                                     String redissonLock = (GATEWAY_SERVER_KEY + "handleResponse:" + user.getUserAccount()).intern();
                                     redissonManager.redissonDistributedLocks(redissonLock, () -> {
+                                        if (user.getBalance() <= 0) {
+                                            throw new BusinessException(ErrorCode.OPERATION_ERROR, "积分不足");
+                                        }
                                         boolean invoke = interfaceInvokeService.invoke(interfaceInfo.getId(), user.getId(), interfaceInfo.getReduceScore());
                                         if (!invoke) {
                                             throw new BusinessException(ErrorCode.OPERATION_ERROR, "接口调用失败");
