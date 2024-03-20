@@ -17,6 +17,6 @@ EXPOSE 9000 9001 9002
 # 在容器中运行 backend.sh 脚本
 CMD ["/bin/bash", "./backend.sh"]
 
-# Deprecated
+# Deprecated Text
 # 构建：docker build -t freefish-api:v0.0.1 .
 # 运行：docker run -p 9000:9000 -p 9001:9001 -p 9002:9002 -d freefish-api:v0.0.1
