@@ -62,5 +62,5 @@ alibaba:
   cloud:
     oss:
       endpoint: https://oss-cn-beijing.aliyuncs.com
-    access-key: LTAI5tM9SCZnTtQoyZZFSZZU
-    secret-key: iQK0CFotGSqyLPCWIuqxdI0HE5nBIF
+    access-key: xxx
+    secret-key: xxx

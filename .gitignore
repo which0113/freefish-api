@@ -5,6 +5,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 **/resources/application-prod.yml
+**/resources/application-local.yml
 
 ### STS ###
 .apt_generated
