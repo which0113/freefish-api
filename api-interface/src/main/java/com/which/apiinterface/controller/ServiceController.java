@@ -29,7 +29,7 @@ public class ServiceController {
 
     @GetMapping("/loveTalk")
     public String randomLoveTalk() {
-        return get("https://api.vvhan.com/api/love");
+        return get("https://api.vvhan.com/api/text/love");
     }
 
     @GetMapping("/poisonousChickenSoup")
