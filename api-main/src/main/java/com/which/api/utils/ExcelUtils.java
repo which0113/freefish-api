@@ -1,5 +1,6 @@
 package com.which.api.utils;
 
+import cn.hutool.core.io.FileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +23,10 @@ public class ExcelUtils {
     public static String excelToCsv(MultipartFile multipartFile) {
         // 1. load excel data
         List<Map<Integer, String>> list = null;
+        String suffix = FileUtil.getSuffix(multipartFile.getOriginalFilename());
         try {
             list = EasyExcel.read(multipartFile.getInputStream())
-                    .excelType(ExcelTypeEnum.XLSX)
+                    .excelType(getEnumByValue(suffix))
                     .sheet()
                     .headRowNumber(0)
                     .doReadSync();
@@ -40,6 +42,23 @@ public class ExcelUtils {
                         .stream().filter(ObjectUtils::isNotEmpty)
                         .collect(Collectors.joining(","))
         ).collect(Collectors.joining("\n"));
+    }
+
+    /**
+     * 根据 value 获取枚举
+     *
+     * @param value 值
+     * @return excel类型枚举
+     */
+    private static ExcelTypeEnum getEnumByValue(String value) {
+        if (ObjectUtils.isNotEmpty(value)) {
+            for (ExcelTypeEnum anEnum : ExcelTypeEnum.values()) {
+                if (anEnum.getValue().equals(value)) {
+                    return anEnum;
+                }
+            }
+        }
+        return null;
     }
 
 }

@@ -36,24 +36,29 @@ public interface CommonConstant {
     String BUCKET_NAME = "freefish-api";
 
     /**
-     * 1M
+     * 3KB
      */
-    Long ONE_M = 1024 * 1024L;
+    Long TREE_KB = 3 * 1024L;
+
+    /**
+     * 1MB
+     */
+    Long ONE_MB = 1024 * 1024L;
 
     /**
      * 文件大小阈值（10MB）
      */
-    long TEN_MB = 10 * 1024 * 1024L;
+    Long TEN_MB = 10 * 1024 * 1024L;
 
     /**
      * 需要积分
      */
-    Long NEED_BALANCE = 6L;
+    Long NEED_BALANCE = 1L;
 
     /**
      * 合法文件后缀
      */
-    List<String> VALID_SUFFIX = Arrays.asList("xlsx", "xls");
+    List<String> VALID_SUFFIX = Arrays.asList("csv", "xlsx", "xls");
 
     /**
      * GPT AI 提示

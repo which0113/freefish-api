@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.Arrays;
 
-import static com.which.api.constant.CommonConstant.ONE_M;
+import static com.which.api.constant.CommonConstant.ONE_MB;
 import static com.which.api.constant.CommonConstant.OSS_HOST;
 
 /**
@@ -123,7 +123,7 @@ public class FileController {
         // 文件后缀
         String fileSuffix = FileUtil.getSuffix(multipartFile.getOriginalFilename());
         if (FileUploadBizEnum.USER_AVATAR.equals(fileUploadBizEnum)) {
-            if (fileSize > ONE_M) {
+            if (fileSize > ONE_MB) {
                 return "文件大小不能超过 1M";
             }
             if (!Arrays.asList("jpeg", "jpg", "svg", "png", "webp", "jiff").contains(fileSuffix)) {
