@@ -64,3 +64,12 @@ alibaba:
       endpoint: https://oss-cn-beijing.aliyuncs.com
     access-key: xxx
     secret-key: xxx
+# 鱼聪明AI
+yuapi:
+  client:
+    access-key: xxx
+    secret-key: xxx
+# GPT key
+open-ai-client:
+  api-key: "sk-xxx"
+  api-host: https://代理地址

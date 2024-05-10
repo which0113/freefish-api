@@ -13,6 +13,11 @@ public interface RedisConstant {
     String RATE_LIMIT_KEY = "rateLimit:";
 
     /**
+     * AI 分析积分扣除
+     */
+    String GEN_CHART_BY_AI = "ai:";
+
+    /**
      * 用户的CURD
      */
     String USER_CURD_KEY = "userCRUD:";

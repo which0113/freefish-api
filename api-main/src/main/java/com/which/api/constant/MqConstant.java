@@ -27,4 +27,12 @@ public interface MqConstant {
 
     String API_DL_KEY = "api.dl.key";
 
+    // BI
+
+    String BI_QUEUE = "bi_queue";
+
+    String BI_DIRECT_EXCHANGE = "bi.direct";
+
+    String BI_ROUTING_KEY = "bi_routing_key";
+
 }
