@@ -15,27 +15,26 @@ import javax.annotation.Resource;
 @Configuration
 public class GlobalWebMvcConfig implements WebMvcConfigurer {
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        //设置允许跨域的路径
-        registry.addMapping("/**")
-                //设置允许跨域请求的域名（如果Origins为*时，Credentials不能是true，所以用OriginPatterns）
-                .allowedOriginPatterns("*")
-                //是否允许证书（cookie） 默认关闭
-                .allowCredentials(true)
-                //设置允许的方法
-                .allowedMethods("*")
-                //设置允许的header属性
-                .allowedHeaders("*")
-                //跨域允许时间
-                .maxAge(3600);
-    }
-
     @Resource
     private LoginInterceptor loginInterceptor;
-
     @Resource
     private RefreshTokenInterceptor refreshTokenInterceptor;
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        // 设置允许跨域的路径
+        registry.addMapping("/**")
+                // 设置允许跨域请求的域名（如果Origins为*时，Credentials不能是true，所以用OriginPatterns）
+                .allowedOriginPatterns("*")
+                // 是否允许证书（cookie） 默认关闭
+                .allowCredentials(true)
+                // 设置允许的方法
+                .allowedMethods("*")
+                // 设置允许的header属性
+                .allowedHeaders("*")
+                // 跨域允许时间
+                .maxAge(3600);
+    }
 
     /**
      * 拦截器
@@ -45,12 +44,14 @@ public class GlobalWebMvcConfig implements WebMvcConfigurer {
         // token刷新拦截器
         registry.addInterceptor(refreshTokenInterceptor)
                 .addPathPatterns("/interfaceInfo/**")
+                .addPathPatterns("/chart/**")
                 .addPathPatterns("/user/**")
                 .addPathPatterns("/file/**")
                 .order(0);
         // 登陆拦截器
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/interfaceInfo/**")
+                .addPathPatterns("/chart/**")
                 .addPathPatterns("/user/**")
                 .addPathPatterns("/file/**")
                 .excludePathPatterns("/interfaceInfo/get")

@@ -233,7 +233,8 @@ public class UserController {
      * @return
      */
     @GetMapping("/list")
-    public BaseResponse<List<UserVO>> getUserVOById(UserQueryRequest userQueryRequest) {
+    @AuthCheck(mustRole = ADMIN_ROLE)
+    public BaseResponse<List<UserVO>> listUser(UserQueryRequest userQueryRequest) {
         if (null == userQueryRequest) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

@@ -243,8 +243,8 @@ public class InterfaceInfoController {
      * @param interfaceInfoQueryRequest 接口信息查询请求
      * @return
      */
-    @AuthCheck(mustRole = ADMIN_ROLE)
     @GetMapping("/list")
+    @AuthCheck(mustRole = ADMIN_ROLE)
     public BaseResponse<List<InterfaceInfo>> listInterfaceInfo(InterfaceInfoQueryRequest interfaceInfoQueryRequest) {
         if (interfaceInfoQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);

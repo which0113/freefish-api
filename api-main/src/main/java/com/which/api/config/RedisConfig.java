@@ -15,9 +15,9 @@ public class RedisConfig {
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        //设置redis的连接工厂对象
+        // 设置redis的连接工厂对象
         redisTemplate.setConnectionFactory(redisConnectionFactory);
-        //设置redis key的序列化器
+        // 设置redis key的序列化器
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         return redisTemplate;
     }

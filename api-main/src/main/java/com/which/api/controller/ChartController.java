@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.which.api.annotation.AuthCheck;
 import com.which.api.common.DeleteRequest;
 import com.which.api.constant.CommonConstant;
-import com.which.api.constant.UserConstant;
 import com.which.api.exception.ThrowUtils;
 import com.which.api.model.dto.chart.*;
 import com.which.api.model.entity.Chart;
@@ -28,6 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+import static com.which.api.constant.UserConstant.ADMIN_ROLE;
 
 /**
  * 图表接口
@@ -54,6 +56,7 @@ public class ChartController {
      * @return
      */
     @PostMapping("/add")
+    @AuthCheck(mustRole = ADMIN_ROLE)
     public BaseResponse<Long> addChart(@RequestBody ChartAddRequest chartAddRequest, HttpServletRequest request) {
         if (chartAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -105,7 +108,7 @@ public class ChartController {
      * @return
      */
     @PostMapping("/update")
-    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    @AuthCheck(mustRole = ADMIN_ROLE)
     public BaseResponse<Boolean> updateChart(@RequestBody ChartUpdateRequest chartUpdateRequest) {
         if (chartUpdateRequest == null || chartUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -145,9 +148,26 @@ public class ChartController {
      * @param request
      * @return
      */
-    @PostMapping("/list/page")
-    public BaseResponse<Page<Chart>> listChartByPage(@RequestBody ChartQueryRequest chartQueryRequest,
-                                                     HttpServletRequest request) {
+    @GetMapping("/list")
+    @AuthCheck(mustRole = ADMIN_ROLE)
+    public BaseResponse<List<Chart>> listChart(ChartQueryRequest chartQueryRequest, HttpServletRequest request) {
+        long size = chartQueryRequest.getPageSize();
+        // 限制爬虫
+        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        List<Chart> chartList = chartService.list(this.getQueryWrapper(chartQueryRequest));
+        return ResultUtils.success(chartList);
+    }
+
+    /**
+     * 分页获取分页
+     *
+     * @param chartQueryRequest
+     * @param request
+     * @return
+     */
+    @GetMapping("/list/page")
+    @AuthCheck(mustRole = ADMIN_ROLE)
+    public BaseResponse<Page<Chart>> listChartByPage(ChartQueryRequest chartQueryRequest, HttpServletRequest request) {
         long current = chartQueryRequest.getCurrent();
         long size = chartQueryRequest.getPageSize();
         // 限制爬虫
@@ -164,9 +184,8 @@ public class ChartController {
      * @param request
      * @return
      */
-    @PostMapping("/my/list/page")
-    public BaseResponse<Page<Chart>> listMyChartByPage(@RequestBody ChartQueryRequest chartQueryRequest,
-                                                       HttpServletRequest request) {
+    @GetMapping("/my/list/page")
+    public BaseResponse<Page<Chart>> listMyChartByPage(ChartQueryRequest chartQueryRequest, HttpServletRequest request) {
         if (chartQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -228,13 +247,24 @@ public class ChartController {
         Long userId = chartQueryRequest.getUserId();
         // 拼接查询条件
         queryWrapper.eq(id != null && id > 0, "id", id);
-        queryWrapper.like(StringUtils.isNotBlank(goal), "goal", goal);
+        // queryWrapper.like(StringUtils.isNotBlank(goal), "goal", goal);
         queryWrapper.like(StringUtils.isNotBlank(name), "name", name);
-        queryWrapper.ne(ObjectUtils.isNotEmpty(chartType), "chartType", chartType);
+        // queryWrapper.ne(ObjectUtils.isNotEmpty(chartType), "chartType", chartType);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
         queryWrapper.eq("isDelete", false);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
+        queryWrapper.select("id",
+                "goal",
+                "name",
+                "chartType",
+                "genChart",
+                "genResult",
+                "chartStatus",
+                "execMessage",
+                "userId",
+                "updateTime"
+        );
         return queryWrapper;
     }
 
