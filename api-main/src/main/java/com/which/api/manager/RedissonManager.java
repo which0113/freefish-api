@@ -56,6 +56,21 @@ public class RedissonManager {
     }
 
     /**
+     * 限流操作（AI 分析）
+     *
+     * @param key 区分不同的限流器，比如不同的用户 id 应该分别统计
+     */
+    public void doRateLimitByAi(String key) {
+        // 创建一个限流器
+        RRateLimiter rateLimiter = redissonClient.getRateLimiter(key);
+        rateLimiter.trySetRate(RateType.OVERALL, RATE_LIMIT_NUM_AI, 1, RateIntervalUnit.SECONDS);
+        // 每当一个操作来了后，请求一个令牌
+        boolean canOp = rateLimiter.tryAcquire(1);
+        ThrowUtils.throwIf(!canOp, ErrorCode.REQUEST_ERROR);
+    }
+
+
+    /**
      * redisson分布式锁
      *
      * @param lockName     锁名称

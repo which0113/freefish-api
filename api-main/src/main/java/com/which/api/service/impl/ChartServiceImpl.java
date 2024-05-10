@@ -58,7 +58,7 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
         }
 
         // 限流
-        redissonManager.doRateLimit(RATE_LIMIT_KEY + "genChartByAi:" + userId);
+        redissonManager.doRateLimitByAi(RATE_LIMIT_KEY + "genChartByAi:" + userId);
         // 校验参数 genChartByAiRequest
         String name = genChartByAiRequest.getName();
         String goal = genChartByAiRequest.getGoal();

@@ -112,6 +112,20 @@ public class UserController {
     }
 
     /**
+     * 用户签到
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/checkIn")
+    public BaseResponse<Boolean> userCheckIn(HttpServletRequest request) {
+        if (request == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        return ResultUtils.success(userService.userCheckIn(request));
+    }
+
+    /**
      * 创建用户
      *
      * @param userAddRequest
@@ -127,8 +141,6 @@ public class UserController {
         BeanUtils.copyProperties(userAddRequest, user);
         // 校验
         userService.validUser(user, true);
-
-
         boolean result = userService.save(user);
         if (!result) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR);

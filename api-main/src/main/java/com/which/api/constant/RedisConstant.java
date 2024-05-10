@@ -28,9 +28,19 @@ public interface RedisConstant {
     String USER_LOGIN_KEY = "userLogin:token:";
 
     /**
+     * 用户签到
+     */
+    String USER_CHECK_IN = "userCheckIn:";
+
+    /**
      * 限流请求数量（每秒 3 次）
      */
     Long RATE_LIMIT_NUM = 3L;
+
+    /**
+     * 图表分析限流请求数量（每秒 1 次）
+     */
+    Long RATE_LIMIT_NUM_AI = 1L;
 
     /**
      * 获取分布式锁自旋时长

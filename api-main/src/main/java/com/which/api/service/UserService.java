@@ -25,6 +25,14 @@ public interface UserService extends IService<User> {
     long userRegister(UserRegisterRequest userRegisterRequest);
 
     /**
+     * 用户签到
+     *
+     * @param request
+     * @return
+     */
+    boolean userCheckIn(HttpServletRequest request);
+
+    /**
      * 用户登录
      *
      * @param request
@@ -89,5 +97,14 @@ public interface UserService extends IService<User> {
      * @return boolean
      */
     boolean reduceWalletBalance(Long userId, Long reduceScore);
+
+    /**
+     * 增加钱包余额
+     *
+     * @param userId        用户id
+     * @param increaseScore
+     * @return boolean
+     */
+    boolean increaseWalletBalance(Long userId, Long increaseScore);
 
 }

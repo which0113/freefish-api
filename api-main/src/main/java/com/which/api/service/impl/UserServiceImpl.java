@@ -1,6 +1,8 @@
 package com.which.api.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -21,6 +23,7 @@ import com.which.apicommon.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -30,10 +33,12 @@ import org.springframework.util.DigestUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import static com.which.api.constant.CommonConstant.CHECKIN_BALANCE;
 import static com.which.api.constant.RedisConstant.*;
 import static com.which.api.constant.UserConstant.*;
 
@@ -138,6 +143,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 //            }
             return userId;
         }, "注册账号失败");
+    }
+
+    @Override
+    public boolean userCheckIn(HttpServletRequest request) {
+        UserVO loginUser = getLoginUser(request);
+        Long userId = loginUser.getId();
+        String checkInKey = USER_CHECK_IN + userId;
+        Boolean flag = redisTemplate.hasKey(checkInKey);
+        if (Boolean.TRUE.equals(flag)) {
+            return false;
+        }
+
+        // 设置 checkInKey 的过期时间，凌晨0点清空
+        Date currentDate = new Date();
+        String day = DateFormatUtils.format(currentDate, "yyyyMMdd");
+        // 获取明天凌晨0点的时间
+        Date tomorrowZero = DateUtil.beginOfDay(DateUtil.tomorrow());
+        // 计算时间差，单位为秒
+        long refreshTime = DateUtil.between(currentDate, tomorrowZero, DateUnit.SECOND);
+        redisTemplate.opsForValue().set(checkInKey, day, refreshTime, TimeUnit.SECONDS);
+
+        // 签到积分+5
+        String redissonLock = (GEN_CHART_BY_AI + "userCheckIn:" + loginUser.getUserAccount()).intern();
+        redissonManager.redissonDistributedLocks(redissonLock, () -> {
+            boolean update = this.increaseWalletBalance(userId, CHECKIN_BALANCE);
+            if (!update) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "签到失败");
+            }
+            return null;
+        }, "签到失败");
+
+        return true;
     }
 
     @Override
@@ -313,6 +350,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LambdaUpdateWrapper<User> userLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
         userLambdaUpdateWrapper.eq(User::getId, userId);
         userLambdaUpdateWrapper.setSql("balance = balance - " + reduceScore);
+        return this.update(userLambdaUpdateWrapper);
+    }
+
+    @Override
+    public boolean increaseWalletBalance(Long userId, Long increaseScore) {
+        LambdaUpdateWrapper<User> userLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        userLambdaUpdateWrapper.eq(User::getId, userId);
+        userLambdaUpdateWrapper.setSql("balance = balance + " + increaseScore);
         return this.update(userLambdaUpdateWrapper);
     }
 

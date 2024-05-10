@@ -56,6 +56,11 @@ public interface CommonConstant {
     Long NEED_BALANCE = 1L;
 
     /**
+     * 签到积分
+     */
+    Long CHECKIN_BALANCE = 5L;
+
+    /**
      * 合法文件后缀
      */
     List<String> VALID_SUFFIX = Arrays.asList("csv", "xlsx", "xls");
