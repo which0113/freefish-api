@@ -187,10 +187,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         if (userAccount.length() < 4) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短,不能小于4位");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短，不能小于4位");
         }
         if (userPassword.length() < 8) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短,不能低于8位字符");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短，不能低于8位字符");
         }
         // 账户不包含特殊字符，匹配由数字、小写字母、大写字母组成的字符串，且字符串的长度至少为1个字符
         String pattern = "[0-9a-zA-Z]+";
@@ -322,14 +322,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             // 添加用户生成8位邀请码
             user.setInvitationCode(generateRandomString(8));
         }
-        //  5. 账户不包含特殊字符
-        // 匹配由数字、小写字母、大写字母组成的字符串,且字符串的长度至少为1个字符
+        if (userPassword.length() < 8) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短，不能低于8位字符");
+        }
+        // 账户不包含特殊字符，匹配由数字、小写字母、大写字母组成的字符串，且字符串的长度至少为1个字符
         String pattern = "[0-9a-zA-Z]+";
         if (StringUtils.isNotBlank(userAccount) && !userAccount.matches(pattern)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号由数字、小写字母、大写字母组成");
         }
         if (ObjectUtils.isNotEmpty(balance) && balance < 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "钱包余额不能为负数");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "积分不能为负数");
         }
         if (StringUtils.isNotBlank(userPassword)) {
             String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
