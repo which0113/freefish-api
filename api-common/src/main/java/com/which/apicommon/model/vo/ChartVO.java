@@ -49,6 +49,10 @@ public class ChartVO {
      */
     private Long userId;
     /**
+     * 创建用户
+     */
+    private String createUser;
+    /**
      * 更新时间
      */
     private Date updateTime;

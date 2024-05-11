@@ -41,4 +41,8 @@ public class ChartQueryRequest extends PageRequest implements Serializable {
      * 创建图表用户 id
      */
     private Long userId;
+    /**
+     * 创建用户
+     */
+    private String createUser;
 }

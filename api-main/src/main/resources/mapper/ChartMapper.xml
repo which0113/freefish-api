@@ -13,6 +13,7 @@
         <result property="genChart" column="genChart" jdbcType="VARCHAR"/>
         <result property="genResult" column="genResult" jdbcType="VARCHAR"/>
         <result property="userId" column="userId" jdbcType="BIGINT"/>
+        <result property="createUser" column="createUser" jdbcType="VARCHAR"/>
         <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
         <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
@@ -21,7 +22,7 @@
     <sql id="Base_Column_List">
         id,goal,`name`,chartData,
         chartType,genChart,genResult,
-        userId,createTime,updateTime,
+        userId,createUser,createTime,updateTime,
         isDelete
     </sql>
 

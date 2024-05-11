@@ -109,6 +109,7 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
         // 更新 chartStatus 为 wait
         chart.setChartStatus(ChartStatusEnum.WAIT.getValue());
         chart.setUserId(userId);
+        chart.setCreateUser(loginUser.getUserAccount());
         boolean saveResult = this.save(chart);
         if (!saveResult) {
             log.error("数据库异常");

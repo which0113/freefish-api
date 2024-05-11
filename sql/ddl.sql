@@ -75,6 +75,7 @@ create table if not exists chart (
     chartStatus varchar(128) default 'wait'            not null comment 'wait-等待 running-生成中 succeed-成功生成 failed-生成失败',
     execMessage text                                   null comment '执行信息',
     userId      bigint                                 null comment '创建图表用户 id',
+    createUser  varchar(256)                           not null comment '创建用户',
     createTime  datetime     default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime  datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete    tinyint      default 0                 not null comment '是否删除'

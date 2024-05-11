@@ -70,6 +70,7 @@ public class ChartController {
         BeanUtil.copyProperties(chartAddRequest, chart);
         UserVO loginUser = userService.getLoginUser(request);
         chart.setUserId(loginUser.getId());
+        chart.setCreateUser(loginUser.getUserAccount());
         boolean result = chartService.save(chart);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         long newChartId = chart.getId();
@@ -228,6 +229,7 @@ public class ChartController {
         String sortField = chartQueryRequest.getSortField();
         String sortOrder = chartQueryRequest.getSortOrder();
         Long userId = chartQueryRequest.getUserId();
+        String createUser = chartQueryRequest.getCreateUser();
         // 拼接查询条件
         boolean goalNotBlank = StringUtils.isNotBlank(goal);
         boolean nameNotBlank = StringUtils.isNotBlank(name);
@@ -248,6 +250,7 @@ public class ChartController {
         }
         queryWrapper.eq(ObjectUtils.isNotEmpty(chartStatus), "chartStatus", chartStatus)
                 .eq(ObjectUtils.isNotEmpty(userId), "userId", userId)
+                .eq(StringUtils.isNotEmpty(createUser), "createUser", createUser)
                 .orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(SORT_ORDER_ASC), sortField)
                 .orderBy(true, false, "updateTime")
                 .select("id",
@@ -259,6 +262,7 @@ public class ChartController {
                         "chartStatus",
                         "execMessage",
                         "userId",
+                        "createUser",
                         "updateTime"
                 );
         return queryWrapper;
