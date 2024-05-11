@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.io.File;
 
-import static com.which.api.constant.CommonConstant.BUCKET_NAME;
+import static com.which.apicommon.constant.CommonConstant.BUCKET_NAME;
 
 /**
  * oss对象存储操作

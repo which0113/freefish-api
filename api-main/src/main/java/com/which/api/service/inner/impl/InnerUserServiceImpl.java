@@ -2,10 +2,10 @@ package com.which.api.service.inner.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.which.api.model.entity.User;
 import com.which.api.service.UserService;
 import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
+import com.which.apicommon.model.entity.User;
 import com.which.apicommon.model.vo.UserVO;
 import com.which.apicommon.service.inner.InnerUserService;
 import org.apache.commons.lang3.StringUtils;

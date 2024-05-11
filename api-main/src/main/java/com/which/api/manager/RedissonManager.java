@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static com.which.api.constant.RedisConstant.*;
+import static com.which.apicommon.constant.RedisConstant.*;
 
 /**
  * RedissonManager

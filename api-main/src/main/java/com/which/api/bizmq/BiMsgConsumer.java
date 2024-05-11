@@ -3,12 +3,12 @@ package com.which.api.bizmq;
 import cn.hutool.json.JSONUtil;
 import com.rabbitmq.client.Channel;
 import com.which.api.manager.AiManager;
-import com.which.api.model.entity.Chart;
-import com.which.api.model.enums.ChartStatusEnum;
 import com.which.api.service.ChartService;
 import com.which.api.ws.WebSocketNotificationService;
 import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
+import com.which.apicommon.model.emums.ChartStatusEnum;
+import com.which.apicommon.model.entity.Chart;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +21,7 @@ import org.springframework.messaging.handler.annotation.Header;
 
 import javax.annotation.Resource;
 
-import static com.which.api.constant.MqConstant.*;
+import static com.which.apicommon.constant.MqConstant.*;
 
 /**
  * @author which

@@ -4,8 +4,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import javax.annotation.Resource;
 
-import static com.which.api.constant.MqConstant.BI_DIRECT_EXCHANGE;
-import static com.which.api.constant.MqConstant.BI_ROUTING_KEY;
+import static com.which.apicommon.constant.MqConstant.BI_DIRECT_EXCHANGE;
+import static com.which.apicommon.constant.MqConstant.BI_ROUTING_KEY;
 
 /**
  * @author which

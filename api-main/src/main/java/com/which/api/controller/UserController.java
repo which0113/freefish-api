@@ -6,23 +6,18 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.which.api.annotation.AuthCheck;
-import com.which.api.common.DeleteRequest;
-import com.which.api.common.IdRequest;
 import com.which.api.exception.ThrowUtils;
-import com.which.api.model.dto.user.*;
-import com.which.api.model.dto.user.email.UserBindEmailRequest;
-import com.which.api.model.dto.user.email.UserEmailLoginRequest;
-import com.which.api.model.dto.user.email.UserEmailRegisterRequest;
-import com.which.api.model.dto.user.email.UserUnBindEmailRequest;
-import com.which.api.model.entity.User;
-import com.which.api.model.enums.UserStatusEnum;
-import com.which.api.model.vo.UserLoginVO;
 import com.which.api.service.UserService;
 import com.which.api.utils.SqlUtils;
-import com.which.apicommon.common.BaseResponse;
-import com.which.apicommon.common.BusinessException;
-import com.which.apicommon.common.ErrorCode;
-import com.which.apicommon.common.ResultUtils;
+import com.which.apicommon.common.*;
+import com.which.apicommon.model.dto.user.*;
+import com.which.apicommon.model.dto.user.email.UserBindEmailRequest;
+import com.which.apicommon.model.dto.user.email.UserEmailLoginRequest;
+import com.which.apicommon.model.dto.user.email.UserEmailRegisterRequest;
+import com.which.apicommon.model.dto.user.email.UserUnBindEmailRequest;
+import com.which.apicommon.model.emums.UserStatusEnum;
+import com.which.apicommon.model.entity.User;
+import com.which.apicommon.model.vo.UserLoginVO;
 import com.which.apicommon.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -36,8 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.which.api.constant.CommonConstant.SORT_ORDER_ASC;
-import static com.which.api.constant.UserConstant.ADMIN_ROLE;
+import static com.which.apicommon.constant.CommonConstant.SORT_ORDER_ASC;
+import static com.which.apicommon.constant.UserConstant.ADMIN_ROLE;
 
 /**
  * 用户接口

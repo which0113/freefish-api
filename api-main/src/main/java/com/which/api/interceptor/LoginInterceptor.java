@@ -9,7 +9,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.which.api.constant.UserConstant.OPTIONS;
+import static com.which.apicommon.constant.UserConstant.OPTIONS;
 
 /**
  * 用户登录拦截器

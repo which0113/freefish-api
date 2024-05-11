@@ -1,11 +1,11 @@
 package com.which.api.bizmq;
 
 import com.rabbitmq.client.Channel;
-import com.which.api.model.entity.User;
-import com.which.api.model.enums.UserRoleEnum;
 import com.which.api.service.UserService;
 import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
+import com.which.apicommon.model.emums.UserRoleEnum;
+import com.which.apicommon.model.entity.User;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
-import static com.which.api.constant.MqConstant.*;
+import static com.which.apicommon.constant.MqConstant.*;
 
 /**
  * RabbitMQ 消费者

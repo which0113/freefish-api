@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.TimeUnit;
 
-import static com.which.api.constant.RedisConstant.USER_LOGIN_TTL;
-import static com.which.api.constant.UserConstant.OPTIONS;
+import static com.which.apicommon.constant.RedisConstant.USER_LOGIN_TTL;
+import static com.which.apicommon.constant.UserConstant.OPTIONS;
 
 /**
  * token刷新拦截器

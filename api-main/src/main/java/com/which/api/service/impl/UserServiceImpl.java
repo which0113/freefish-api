@@ -10,15 +10,15 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.which.api.manager.RedissonManager;
 import com.which.api.mapper.UserMapper;
-import com.which.api.model.dto.user.UserLoginRequest;
-import com.which.api.model.dto.user.UserRegisterRequest;
-import com.which.api.model.entity.User;
-import com.which.api.model.enums.UserRoleEnum;
-import com.which.api.model.enums.UserStatusEnum;
-import com.which.api.model.vo.UserLoginVO;
 import com.which.api.service.UserService;
 import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
+import com.which.apicommon.model.dto.user.UserLoginRequest;
+import com.which.apicommon.model.dto.user.UserRegisterRequest;
+import com.which.apicommon.model.emums.UserRoleEnum;
+import com.which.apicommon.model.emums.UserStatusEnum;
+import com.which.apicommon.model.entity.User;
+import com.which.apicommon.model.vo.UserLoginVO;
 import com.which.apicommon.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -37,9 +37,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import static com.which.api.constant.CommonConstant.CHECKIN_BALANCE;
-import static com.which.api.constant.RedisConstant.*;
-import static com.which.api.constant.UserConstant.*;
+import static com.which.apicommon.constant.CommonConstant.CHECKIN_BALANCE;
+import static com.which.apicommon.constant.RedisConstant.*;
+import static com.which.apicommon.constant.UserConstant.*;
 
 /**
  * 用户服务实现

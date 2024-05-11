@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-import static com.which.api.constant.CommonConstant.GPT_AI_PROMPT;
+import static com.which.apicommon.constant.CommonConstant.GPT_AI_PROMPT;
 
 /**
  * @author which

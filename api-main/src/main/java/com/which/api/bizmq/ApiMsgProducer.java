@@ -4,8 +4,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import javax.annotation.Resource;
 
-import static com.which.api.constant.MqConstant.API_DELAY_EXCHANGE;
-import static com.which.api.constant.MqConstant.API_DELAY_KEY;
+import static com.which.apicommon.constant.MqConstant.API_DELAY_EXCHANGE;
+import static com.which.apicommon.constant.MqConstant.API_DELAY_KEY;
 
 /**
  * RabbitMQ 生产者

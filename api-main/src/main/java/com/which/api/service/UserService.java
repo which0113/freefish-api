@@ -1,10 +1,10 @@
 package com.which.api.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.which.api.model.dto.user.UserLoginRequest;
-import com.which.api.model.dto.user.UserRegisterRequest;
-import com.which.api.model.entity.User;
-import com.which.api.model.vo.UserLoginVO;
+import com.which.apicommon.model.dto.user.UserLoginRequest;
+import com.which.apicommon.model.dto.user.UserRegisterRequest;
+import com.which.apicommon.model.entity.User;
+import com.which.apicommon.model.vo.UserLoginVO;
 import com.which.apicommon.model.vo.UserVO;
 
 import javax.servlet.http.HttpServletRequest;

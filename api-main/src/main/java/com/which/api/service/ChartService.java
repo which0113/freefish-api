@@ -1,9 +1,9 @@
 package com.which.api.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.which.api.model.dto.chart.GenChartByAiRequest;
-import com.which.api.model.entity.Chart;
-import com.which.api.model.vo.BiVO;
+import com.which.apicommon.model.dto.chart.GenChartByAiRequest;
+import com.which.apicommon.model.entity.Chart;
+import com.which.apicommon.model.vo.BiVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;

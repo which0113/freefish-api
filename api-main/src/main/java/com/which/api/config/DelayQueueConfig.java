@@ -3,7 +3,7 @@ package com.which.api.config;
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 
-import static com.which.api.constant.MqConstant.*;
+import static com.which.apicommon.constant.MqConstant.*;
 
 /**
  * 延迟队列配置

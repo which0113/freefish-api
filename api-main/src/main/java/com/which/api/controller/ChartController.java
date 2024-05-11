@@ -5,23 +5,19 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.which.api.annotation.AuthCheck;
-import com.which.api.common.DeleteRequest;
 import com.which.api.exception.ThrowUtils;
-import com.which.api.model.dto.chart.ChartAddRequest;
-import com.which.api.model.dto.chart.ChartQueryRequest;
-import com.which.api.model.dto.chart.ChartUpdateRequest;
-import com.which.api.model.dto.chart.GenChartByAiRequest;
-import com.which.api.model.entity.Chart;
-import com.which.api.model.enums.ChartStatusEnum;
-import com.which.api.model.vo.BiVO;
-import com.which.api.model.vo.ChartVO;
 import com.which.api.service.ChartService;
 import com.which.api.service.UserService;
 import com.which.api.utils.SqlUtils;
-import com.which.apicommon.common.BaseResponse;
-import com.which.apicommon.common.BusinessException;
-import com.which.apicommon.common.ErrorCode;
-import com.which.apicommon.common.ResultUtils;
+import com.which.apicommon.common.*;
+import com.which.apicommon.model.dto.chart.ChartAddRequest;
+import com.which.apicommon.model.dto.chart.ChartQueryRequest;
+import com.which.apicommon.model.dto.chart.ChartUpdateRequest;
+import com.which.apicommon.model.dto.chart.GenChartByAiRequest;
+import com.which.apicommon.model.emums.ChartStatusEnum;
+import com.which.apicommon.model.entity.Chart;
+import com.which.apicommon.model.vo.BiVO;
+import com.which.apicommon.model.vo.ChartVO;
 import com.which.apicommon.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -35,9 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.which.api.constant.CommonConstant.SORT_ORDER_ASC;
-import static com.which.api.constant.UserConstant.ADMIN_ROLE;
-import static com.which.api.constant.UserConstant.DEMO_ROLE;
+import static com.which.apicommon.constant.CommonConstant.SORT_ORDER_ASC;
+import static com.which.apicommon.constant.UserConstant.ADMIN_ROLE;
+import static com.which.apicommon.constant.UserConstant.DEMO_ROLE;
 
 /**
  * 图表接口

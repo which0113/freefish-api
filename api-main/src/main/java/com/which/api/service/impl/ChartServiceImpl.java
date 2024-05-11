@@ -6,16 +6,16 @@ import com.which.api.exception.ThrowUtils;
 import com.which.api.manager.MsgAsynManager;
 import com.which.api.manager.RedissonManager;
 import com.which.api.mapper.ChartMapper;
-import com.which.api.model.dto.chart.GenChartByAiRequest;
-import com.which.api.model.entity.Chart;
-import com.which.api.model.entity.User;
-import com.which.api.model.enums.ChartStatusEnum;
-import com.which.api.model.vo.BiVO;
 import com.which.api.service.ChartService;
 import com.which.api.service.UserService;
 import com.which.api.utils.ExcelUtils;
 import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
+import com.which.apicommon.model.dto.chart.GenChartByAiRequest;
+import com.which.apicommon.model.emums.ChartStatusEnum;
+import com.which.apicommon.model.entity.Chart;
+import com.which.apicommon.model.entity.User;
+import com.which.apicommon.model.vo.BiVO;
 import com.which.apicommon.model.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Lazy;
@@ -25,9 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import static com.which.api.constant.CommonConstant.*;
-import static com.which.api.constant.RedisConstant.GEN_CHART_BY_AI;
-import static com.which.api.constant.RedisConstant.RATE_LIMIT_KEY;
+import static com.which.apicommon.constant.CommonConstant.*;
+import static com.which.apicommon.constant.RedisConstant.GEN_CHART_BY_AI;
+import static com.which.apicommon.constant.RedisConstant.RATE_LIMIT_KEY;
 
 /**
  * @author which

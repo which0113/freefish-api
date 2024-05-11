@@ -1,10 +1,10 @@
 package com.which.api.manager;
 
 import cn.hutool.json.JSONUtil;
-import com.which.api.model.entity.Chart;
-import com.which.api.model.enums.ChartStatusEnum;
 import com.which.api.service.ChartService;
 import com.which.api.ws.WebSocketNotificationService;
+import com.which.apicommon.model.emums.ChartStatusEnum;
+import com.which.apicommon.model.entity.Chart;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
