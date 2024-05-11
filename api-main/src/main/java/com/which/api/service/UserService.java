@@ -58,6 +58,14 @@ public interface UserService extends IService<User> {
     boolean isAdmin(HttpServletRequest request);
 
     /**
+     * 是否为演示账号
+     *
+     * @param request
+     * @return
+     */
+    boolean isDemo(HttpServletRequest request);
+
+    /**
      * 用户注销
      *
      * @param request

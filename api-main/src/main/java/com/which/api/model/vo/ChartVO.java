@@ -1,22 +1,21 @@
-package com.which.api.model.dto.chart;
+package com.which.api.model.vo;
 
-import com.which.api.common.PageRequest;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
+import java.util.Date;
 
 /**
- * 查询请求
+ * 图表信息 VO
  *
  * @author which
+ * @date 2024/05/11
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class ChartQueryRequest extends PageRequest implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class ChartVO {
+    /**
+     * ID
+     */
+    private Long id;
     /**
      * 分析目标
      */
@@ -30,6 +29,10 @@ public class ChartQueryRequest extends PageRequest implements Serializable {
      */
     private String chartType;
     /**
+     * 生成的图表信息
+     */
+    private String genChart;
+    /**
      * 生成的分析结论
      */
     private String genResult;
@@ -38,7 +41,15 @@ public class ChartQueryRequest extends PageRequest implements Serializable {
      */
     private String chartStatus;
     /**
-     * 创建图表用户 id
+     * 执行信息
+     */
+    private String execMessage;
+    /**
+     * 创建图表用户 ID
      */
     private Long userId;
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
 }

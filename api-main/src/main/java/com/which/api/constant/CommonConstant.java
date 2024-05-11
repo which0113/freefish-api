@@ -18,7 +18,12 @@ public interface CommonConstant {
     /**
      * 降序
      */
-    String SORT_ORDER_DESC = " descend";
+    String SORT_ORDER_DESC = "descend";
+
+    /**
+     * 更新时间
+     */
+    String UPDATE_TIME = "updateTime";
 
     /**
      * 爬虫的最大次数
@@ -53,7 +58,7 @@ public interface CommonConstant {
     /**
      * 需要积分
      */
-    Long NEED_BALANCE = 1L;
+    Long NEED_BALANCE = 6L;
 
     /**
      * 签到积分

@@ -31,7 +31,7 @@ public class UserVO implements Serializable {
      */
     private String invitationCode;
     /**
-     * 账号状态（0- 正常 1- 封号）
+     * 账号状态
      */
     private Integer status;
     /**
@@ -59,7 +59,7 @@ public class UserVO implements Serializable {
      */
     private String gender;
     /**
-     * 用户角色: user, admin
+     * 用户角色
      */
     private String userRole;
     /**

@@ -15,10 +15,7 @@ import java.io.Serializable;
 @Data
 public class UserQueryRequest extends PageRequest implements Serializable {
     private static final long serialVersionUID = 1L;
-    /**
-     * id
-     */
-    private Long id;
+
     /**
      * 用户昵称
      */
@@ -32,7 +29,7 @@ public class UserQueryRequest extends PageRequest implements Serializable {
      */
     private String gender;
     /**
-     * 用户角色: 用户角色：visitor / user / admin
+     * 用户角色
      */
     private String userRole;
 }

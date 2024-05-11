@@ -55,7 +55,7 @@ public class Chart implements Serializable {
      */
     private String execMessage;
     /**
-     * 创建图标用户 id
+     * 创建图表用户 id
      */
     private Long userId;
     /**

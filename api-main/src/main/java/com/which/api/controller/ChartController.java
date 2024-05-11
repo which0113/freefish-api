@@ -1,15 +1,20 @@
 package com.which.api.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.which.api.annotation.AuthCheck;
 import com.which.api.common.DeleteRequest;
-import com.which.api.constant.CommonConstant;
 import com.which.api.exception.ThrowUtils;
-import com.which.api.model.dto.chart.*;
+import com.which.api.model.dto.chart.ChartAddRequest;
+import com.which.api.model.dto.chart.ChartQueryRequest;
+import com.which.api.model.dto.chart.ChartUpdateRequest;
+import com.which.api.model.dto.chart.GenChartByAiRequest;
 import com.which.api.model.entity.Chart;
 import com.which.api.model.enums.ChartStatusEnum;
 import com.which.api.model.vo.BiVO;
+import com.which.api.model.vo.ChartVO;
 import com.which.api.service.ChartService;
 import com.which.api.service.UserService;
 import com.which.api.utils.SqlUtils;
@@ -21,15 +26,18 @@ import com.which.apicommon.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.which.api.constant.CommonConstant.SORT_ORDER_ASC;
 import static com.which.api.constant.UserConstant.ADMIN_ROLE;
+import static com.which.api.constant.UserConstant.DEMO_ROLE;
 
 /**
  * 图表接口
@@ -43,6 +51,7 @@ public class ChartController {
 
     @Resource
     private ChartService chartService;
+
     @Resource
     private UserService userService;
 
@@ -62,7 +71,7 @@ public class ChartController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         Chart chart = new Chart();
-        BeanUtils.copyProperties(chartAddRequest, chart);
+        BeanUtil.copyProperties(chartAddRequest, chart);
         UserVO loginUser = userService.getLoginUser(request);
         chart.setUserId(loginUser.getId());
         boolean result = chartService.save(chart);
@@ -102,120 +111,20 @@ public class ChartController {
     }
 
     /**
-     * 更新（仅管理员）
+     * 更新
      *
      * @param chartUpdateRequest
      * @return
      */
     @PostMapping("/update")
-    @AuthCheck(mustRole = ADMIN_ROLE)
-    public BaseResponse<Boolean> updateChart(@RequestBody ChartUpdateRequest chartUpdateRequest) {
+    public BaseResponse<Boolean> updateChart(@RequestBody ChartUpdateRequest chartUpdateRequest, HttpServletRequest request) {
         if (chartUpdateRequest == null || chartUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         Chart chart = new Chart();
-        BeanUtils.copyProperties(chartUpdateRequest, chart);
+        BeanUtil.copyProperties(chartUpdateRequest, chart);
+        UserVO loginUser = userService.getLoginUser(request);
         long id = chartUpdateRequest.getId();
-        // 判断是否存在
-        Chart oldChart = chartService.getById(id);
-        ThrowUtils.throwIf(oldChart == null, ErrorCode.NOT_FOUND_ERROR);
-        boolean result = chartService.updateById(chart);
-        return ResultUtils.success(result);
-    }
-
-    /**
-     * 根据 id 获取
-     *
-     * @param id
-     * @return
-     */
-    @GetMapping("/get")
-    public BaseResponse<Chart> getChartById(long id, HttpServletRequest request) {
-        if (id <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        Chart chart = chartService.getById(id);
-        if (chart == null) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
-        }
-        return ResultUtils.success(chart);
-    }
-
-    /**
-     * 分页获取列表（封装类）
-     *
-     * @param chartQueryRequest
-     * @param request
-     * @return
-     */
-    @GetMapping("/list")
-    @AuthCheck(mustRole = ADMIN_ROLE)
-    public BaseResponse<List<Chart>> listChart(ChartQueryRequest chartQueryRequest, HttpServletRequest request) {
-        long size = chartQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        List<Chart> chartList = chartService.list(this.getQueryWrapper(chartQueryRequest));
-        return ResultUtils.success(chartList);
-    }
-
-    /**
-     * 分页获取分页
-     *
-     * @param chartQueryRequest
-     * @param request
-     * @return
-     */
-    @GetMapping("/list/page")
-    @AuthCheck(mustRole = ADMIN_ROLE)
-    public BaseResponse<Page<Chart>> listChartByPage(ChartQueryRequest chartQueryRequest, HttpServletRequest request) {
-        long current = chartQueryRequest.getCurrent();
-        long size = chartQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<Chart> chartPage = chartService.page(new Page<>(current, size),
-                this.getQueryWrapper(chartQueryRequest));
-        return ResultUtils.success(chartPage);
-    }
-
-    /**
-     * 分页获取当前用户创建的资源列表
-     *
-     * @param chartQueryRequest
-     * @param request
-     * @return
-     */
-    @GetMapping("/my/list/page")
-    public BaseResponse<Page<Chart>> listMyChartByPage(ChartQueryRequest chartQueryRequest, HttpServletRequest request) {
-        if (chartQueryRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        UserVO loginUser = userService.getLoginUser(request);
-        chartQueryRequest.setUserId(loginUser.getId());
-        long current = chartQueryRequest.getCurrent();
-        long size = chartQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<Chart> chartPage = chartService.page(new Page<>(current, size),
-                this.getQueryWrapper(chartQueryRequest));
-        return ResultUtils.success(chartPage);
-    }
-
-    /**
-     * 编辑（用户）
-     *
-     * @param chartEditRequest
-     * @param request
-     * @return
-     */
-    @PostMapping("/edit")
-    public BaseResponse<Boolean> editChart(@RequestBody ChartEditRequest chartEditRequest, HttpServletRequest request) {
-        if (chartEditRequest == null || chartEditRequest.getId() <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        Chart chart = new Chart();
-        BeanUtils.copyProperties(chartEditRequest, chart);
-        UserVO loginUser = userService.getLoginUser(request);
-        long id = chartEditRequest.getId();
         // 判断是否存在
         Chart oldChart = chartService.getById(id);
         ThrowUtils.throwIf(oldChart == null, ErrorCode.NOT_FOUND_ERROR);
@@ -228,12 +137,89 @@ public class ChartController {
     }
 
     /**
+     * 根据 id 获取
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/get")
+    public BaseResponse<ChartVO> getChartById(long id, HttpServletRequest request) {
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Chart chart = chartService.getById(id);
+        if (chart == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        ChartVO chartVO = new ChartVO();
+        BeanUtil.copyProperties(chart, chartVO);
+        return ResultUtils.success(chartVO);
+    }
+
+    /**
+     * 分页获取数据
+     *
+     * @param chartQueryRequest
+     * @param request
+     * @return
+     */
+    @GetMapping("/list/page")
+    @AuthCheck(anyRole = {ADMIN_ROLE, DEMO_ROLE})
+    public BaseResponse<Page<ChartVO>> listChartByPage(ChartQueryRequest chartQueryRequest, HttpServletRequest request) {
+        if (chartQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        return this.getPageBaseResponse(chartQueryRequest, true);
+    }
+
+    /**
+     * 分页获取当前用户的数据
+     *
+     * @param chartQueryRequest
+     * @param request
+     * @return
+     */
+    @GetMapping("/my/list/page")
+    public BaseResponse<Page<ChartVO>> listChartByMyPage(ChartQueryRequest chartQueryRequest, HttpServletRequest request) {
+        if (chartQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 限制爬虫
+        ThrowUtils.throwIf(chartQueryRequest.getPageSize() > 20, ErrorCode.PARAMS_ERROR);
+        UserVO loginUser = userService.getLoginUser(request);
+        chartQueryRequest.setUserId(loginUser.getId());
+        return this.getPageBaseResponse(chartQueryRequest, false);
+    }
+
+    /**
+     * 获取 PageVO BaseResponse
+     *
+     * @param chartQueryRequest
+     * @return
+     */
+    @NotNull
+    private BaseResponse<Page<ChartVO>> getPageBaseResponse(ChartQueryRequest chartQueryRequest, boolean isAdminPage) {
+        long current = chartQueryRequest.getCurrent();
+        long size = chartQueryRequest.getPageSize();
+        Page<Chart> chartPage = chartService.page(new Page<>(current, size),
+                this.getQueryWrapper(chartQueryRequest, isAdminPage));
+        Page<ChartVO> chartVoPage = new PageDTO<>(chartPage.getCurrent(), chartPage.getSize(), chartPage.getTotal());
+        List<ChartVO> chartVOList = chartPage.getRecords().stream().map(chart -> {
+            ChartVO chartVO = new ChartVO();
+            BeanUtil.copyProperties(chart, chartVO);
+            return chartVO;
+        }).collect(Collectors.toList());
+        chartVoPage.setRecords(chartVOList);
+        return ResultUtils.success(chartVoPage);
+    }
+
+    /**
      * 获取查询包装类
      *
      * @param chartQueryRequest
      * @return
      */
-    private QueryWrapper<Chart> getQueryWrapper(ChartQueryRequest chartQueryRequest) {
+    private QueryWrapper<Chart> getQueryWrapper(ChartQueryRequest chartQueryRequest, boolean isAdminPage) {
         QueryWrapper<Chart> queryWrapper = new QueryWrapper<>();
         if (chartQueryRequest == null) {
             return queryWrapper;
@@ -241,30 +227,44 @@ public class ChartController {
         String goal = chartQueryRequest.getGoal();
         String name = chartQueryRequest.getName();
         String chartType = chartQueryRequest.getChartType();
+        String genResult = chartQueryRequest.getGenResult();
+        String chartStatus = chartQueryRequest.getChartStatus();
         String sortField = chartQueryRequest.getSortField();
         String sortOrder = chartQueryRequest.getSortOrder();
-        Long id = chartQueryRequest.getId();
         Long userId = chartQueryRequest.getUserId();
         // 拼接查询条件
-        queryWrapper.eq(id != null && id > 0, "id", id);
-        // queryWrapper.like(StringUtils.isNotBlank(goal), "goal", goal);
-        queryWrapper.like(StringUtils.isNotBlank(name), "name", name);
-        // queryWrapper.ne(ObjectUtils.isNotEmpty(chartType), "chartType", chartType);
-        queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
-        queryWrapper.eq("isDelete", false);
-        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
-                sortField);
-        queryWrapper.select("id",
-                "goal",
-                "name",
-                "chartType",
-                "genChart",
-                "genResult",
-                "chartStatus",
-                "execMessage",
-                "userId",
-                "updateTime"
-        );
+        boolean goalNotBlank = StringUtils.isNotBlank(goal);
+        boolean nameNotBlank = StringUtils.isNotBlank(name);
+        boolean genResultNotEmpty = ObjectUtils.isNotEmpty(genResult);
+        boolean chartTypeNotEmpty = ObjectUtils.isNotEmpty(chartType);
+        if (isAdminPage) {
+            // 管理界面查询使用 and 操作
+            queryWrapper.like(goalNotBlank, "goal", goal)
+                    .like(nameNotBlank, "name", name)
+                    .like(genResultNotEmpty, "genResult", genResult)
+                    .like(chartTypeNotEmpty, "chartType", chartType);
+        } else {
+            queryWrapper.and(goalNotBlank || nameNotBlank || genResultNotEmpty || chartTypeNotEmpty, qw -> qw
+                    .like(goalNotBlank, "goal", goal)
+                    .or().like(nameNotBlank, "name", name)
+                    .or().like(genResultNotEmpty, "genResult", genResult)
+                    .or().like(chartTypeNotEmpty, "chartType", chartType));
+        }
+        queryWrapper.eq(ObjectUtils.isNotEmpty(chartStatus), "chartStatus", chartStatus)
+                .eq(ObjectUtils.isNotEmpty(userId), "userId", userId)
+                .orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(SORT_ORDER_ASC), sortField)
+                .orderBy(true, false, "updateTime")
+                .select("id",
+                        "goal",
+                        "name",
+                        "chartType",
+                        "genChart",
+                        "genResult",
+                        "chartStatus",
+                        "execMessage",
+                        "userId",
+                        "updateTime"
+                );
         return queryWrapper;
     }
 

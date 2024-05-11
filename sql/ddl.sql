@@ -15,7 +15,7 @@ create table if not exists user (
     userAvatar     varchar(1024)                          null comment '用户头像',
     email          varchar(256)                           null comment '邮箱',
     gender         varchar(10)                            null comment '性别 0-男 1-女 2-保密',
-    userRole       varchar(256) default 'visitor'         not null comment '用户角色：visitor / user / admin',
+    userRole       varchar(256) default 'visitor'         not null comment '用户角色：visitor / user / admin / demo',
     userPassword   varchar(512)                           null comment '密码',
     accessKey      varchar(256)                           null comment 'accessKey',
     secretKey      varchar(256)                           null comment 'secretKey',
@@ -49,7 +49,7 @@ create table if not exists interface_info (
     createTime     datetime     default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime     datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete       tinyint      default 0                 not null comment '是否删除'
-) comment '接口信息';
+) comment '接口信息' collate = utf8mb4_unicode_ci;
 
 -- 用户接口调用表
 create table if not exists user_interface_invoke (
@@ -61,7 +61,7 @@ create table if not exists user_interface_invoke (
     createTime   datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete     tinyint  default 0                 not null comment '是否删除'
-) comment '用户接口调用表';
+) comment '用户接口调用表' collate = utf8mb4_unicode_ci;
 
 -- 图表信息表
 create table if not exists chart (
@@ -74,7 +74,7 @@ create table if not exists chart (
     genResult   text                                   null comment '生成的分析结论',
     chartStatus varchar(128) default 'wait'            not null comment 'wait-等待 running-生成中 succeed-成功生成 failed-生成失败',
     execMessage text                                   null comment '执行信息',
-    userId      bigint                                 null comment '创建图标用户 id',
+    userId      bigint                                 null comment '创建图表用户 id',
     createTime  datetime     default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime  datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete    tinyint      default 0                 not null comment '是否删除'

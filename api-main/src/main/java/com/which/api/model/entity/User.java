@@ -43,7 +43,7 @@ public class User implements Serializable {
      */
     private String gender;
     /**
-     * 用户角色：visitor / user / admin
+     * 用户角色：visitor / user / admin / demo
      */
     private String userRole;
     /**

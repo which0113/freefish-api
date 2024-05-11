@@ -1,5 +1,6 @@
 package com.which.api.service.inner.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.which.api.model.entity.User;
 import com.which.api.service.UserService;
@@ -9,7 +10,6 @@ import com.which.apicommon.model.vo.UserVO;
 import com.which.apicommon.service.inner.InnerUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.beans.BeanUtils;
 
 import javax.annotation.Resource;
 
@@ -31,7 +31,7 @@ public class InnerUserServiceImpl implements InnerUserService {
         userLambdaQueryWrapper.eq(User::getAccessKey, accessKey);
         User user = userService.getOne(userLambdaQueryWrapper);
         UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user, userVO);
+        BeanUtil.copyProperties(user, userVO);
         return userVO;
     }
 

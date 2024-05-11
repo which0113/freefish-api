@@ -33,11 +33,11 @@ public class UserUpdateRequest implements Serializable {
      */
     private String gender;
     /**
-     * 用户角色: 用户角色：visitor / user / admin
+     * 用户角色
      */
     private String userRole;
     /**
-     * 账号状态（0- 正常 1- 封号）
+     * 账号状态
      */
     private Integer status;
     /**

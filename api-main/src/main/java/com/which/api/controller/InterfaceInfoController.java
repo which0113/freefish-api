@@ -1,20 +1,21 @@
 package com.which.api.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.which.api.annotation.AuthCheck;
 import com.which.api.common.DeleteRequest;
 import com.which.api.common.IdRequest;
-import com.which.api.constant.CommonConstant;
+import com.which.api.exception.ThrowUtils;
 import com.which.api.manager.RedissonManager;
 import com.which.api.model.dto.interfaceinfo.*;
-import com.which.api.model.entity.User;
 import com.which.api.model.enums.InterfaceStatusEnum;
 import com.which.api.service.InterfaceInfoService;
 import com.which.api.service.UserService;
@@ -23,6 +24,7 @@ import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
 import com.which.apicommon.common.ResultUtils;
 import com.which.apicommon.model.entity.InterfaceInfo;
+import com.which.apicommon.model.vo.InterfaceInfoVO;
 import com.which.apicommon.model.vo.UserVO;
 import com.which.apisdk.client.ApiClient;
 import com.which.apisdk.model.request.CurrencyRequest;
@@ -30,7 +32,7 @@ import com.which.apisdk.model.response.ResultResponse;
 import com.which.apisdk.service.ApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.BeanUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,9 +42,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.which.api.constant.CommonConstant.CRAWLER_NUM;
+import static com.which.api.constant.CommonConstant.SORT_ORDER_ASC;
 import static com.which.api.constant.RedisConstant.RATE_LIMIT_KEY;
 import static com.which.api.constant.UserConstant.ADMIN_ROLE;
+import static com.which.api.constant.UserConstant.DEMO_ROLE;
 
 /**
  * api信息接口
@@ -98,7 +101,7 @@ public class InterfaceInfoController {
             String responseParams = JSONUtil.toJsonStr(responseParamsFields);
             interfaceInfo.setResponseParams(responseParams);
         }
-        BeanUtils.copyProperties(interfaceInfoAddRequest, interfaceInfo);
+        BeanUtil.copyProperties(interfaceInfoAddRequest, interfaceInfo);
         // 校验
         interfaceInfoService.validInterfaceInfo(interfaceInfo, true);
         UserVO loginUser = userService.getLoginUser(request);
@@ -165,7 +168,7 @@ public class InterfaceInfoController {
             String responseParams = JSONUtil.toJsonStr(responseParamsFields);
             interfaceInfo.setResponseParams(responseParams);
         }
-        BeanUtils.copyProperties(interfaceInfoUpdateRequest, interfaceInfo);
+        BeanUtil.copyProperties(interfaceInfoUpdateRequest, interfaceInfo);
         // 参数校验
         interfaceInfoService.validInterfaceInfo(interfaceInfo, false);
         UserVO user = userService.getLoginUser(request);
@@ -190,129 +193,129 @@ public class InterfaceInfoController {
      * @return
      */
     @GetMapping("/get")
-    public BaseResponse<InterfaceInfo> getInterfaceInfoById(long id) {
+    public BaseResponse<InterfaceInfoVO> getInterfaceInfoById(long id) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         InterfaceInfo interfaceInfo = interfaceInfoService.getById(id);
-        return ResultUtils.success(interfaceInfo);
+        InterfaceInfoVO interfaceInfoVO = new InterfaceInfoVO();
+        BeanUtil.copyProperties(interfaceInfo, interfaceInfoVO);
+        return ResultUtils.success(interfaceInfoVO);
     }
 
     /**
-     * 按搜索文本页查询数据
+     * 分页获取数据
      *
-     * @param interfaceInfoQueryRequest 接口信息查询请求
-     * @param request                   请求
-     * @return
-     */
-    @GetMapping("/get/searchText")
-    public BaseResponse<Page<InterfaceInfo>> listInterfaceInfoBySearchTextPage(InterfaceInfoSearchTextRequest interfaceInfoQueryRequest, HttpServletRequest request) {
-        if (interfaceInfoQueryRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        InterfaceInfo interfaceInfoQuery = new InterfaceInfo();
-        BeanUtils.copyProperties(interfaceInfoQueryRequest, interfaceInfoQuery);
-
-        String searchText = interfaceInfoQueryRequest.getSearchText();
-        long size = interfaceInfoQueryRequest.getPageSize();
-        long current = interfaceInfoQueryRequest.getCurrent();
-        String sortField = interfaceInfoQueryRequest.getSortField();
-        if (StringUtils.isBlank(sortField)) {
-            sortField = "totalInvokes";
-        }
-        String sortOrder = interfaceInfoQueryRequest.getSortOrder();
-
-        QueryWrapper<InterfaceInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(StringUtils.isNotBlank(searchText), "name", searchText)
-                .or()
-                .like(StringUtils.isNotBlank(searchText), "description", searchText);
-        queryWrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_DESC), sortField);
-        Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size), queryWrapper);
-        // 不是管理员只能查看已经上线的
-        if (!userService.isAdmin(request)) {
-            List<InterfaceInfo> interfaceInfoList = interfaceInfoPage.getRecords().stream()
-                    .filter(interfaceInfo -> interfaceInfo.getStatus().equals(InterfaceStatusEnum.ONLINE.getValue())).collect(Collectors.toList());
-            interfaceInfoPage.setRecords(interfaceInfoList);
-        }
-        return ResultUtils.success(interfaceInfoPage);
-    }
-
-    /**
-     * 获取列表（仅管理员可使用）
-     *
-     * @param interfaceInfoQueryRequest 接口信息查询请求
-     * @return
-     */
-    @GetMapping("/list")
-    @AuthCheck(mustRole = ADMIN_ROLE)
-    public BaseResponse<List<InterfaceInfo>> listInterfaceInfo(InterfaceInfoQueryRequest interfaceInfoQueryRequest) {
-        if (interfaceInfoQueryRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        InterfaceInfo interfaceInfoQuery = new InterfaceInfo();
-        BeanUtils.copyProperties(interfaceInfoQueryRequest, interfaceInfoQuery);
-
-        QueryWrapper<InterfaceInfo> queryWrapper = new QueryWrapper<>(interfaceInfoQuery);
-        List<InterfaceInfo> interfaceInfoList = interfaceInfoService.list(queryWrapper);
-        return ResultUtils.success(interfaceInfoList);
-    }
-
-    /**
-     * 分页获取列表
-     *
-     * @param interfaceInfoQueryRequest 接口信息查询请求
-     * @param request                   请求
+     * @param interfaceInfoQueryRequest
+     * @param request
      * @return
      */
     @GetMapping("/list/page")
-    public BaseResponse<Page<InterfaceInfo>> listInterfaceInfoByPage(InterfaceInfoQueryRequest interfaceInfoQueryRequest, HttpServletRequest request) {
+    @AuthCheck(anyRole = {ADMIN_ROLE, DEMO_ROLE})
+    public BaseResponse<Page<InterfaceInfoVO>> listInterfaceInfoByPage(InterfaceInfoQueryRequest interfaceInfoQueryRequest, HttpServletRequest request) {
         if (interfaceInfoQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        interfaceInfoQueryRequest.setSortField("totalInvokes");
+        return this.getPageBaseResponse(interfaceInfoQueryRequest, true);
+    }
 
-        InterfaceInfo interfaceInfoQuery = new InterfaceInfo();
-        BeanUtils.copyProperties(interfaceInfoQueryRequest, interfaceInfoQuery);
+    /**
+     * 分页获取当前用户的数据
+     *
+     * @param interfaceInfoQueryRequest
+     * @param request
+     * @return
+     */
+    @GetMapping("/search/list/page")
+    public BaseResponse<Page<InterfaceInfoVO>> listInterfaceInfoBySearchPage(InterfaceInfoQueryRequest interfaceInfoQueryRequest, HttpServletRequest request) {
+        if (interfaceInfoQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 限制爬虫
+        ThrowUtils.throwIf(interfaceInfoQueryRequest.getPageSize() > 20, ErrorCode.PARAMS_ERROR);
+        interfaceInfoQueryRequest.setStatus(InterfaceStatusEnum.ONLINE.getValue());
+        interfaceInfoQueryRequest.setSortField("totalInvokes");
+        return this.getPageBaseResponse(interfaceInfoQueryRequest, false);
+    }
+
+    /**
+     * 获取 PageVO BaseResponse
+     *
+     * @param interfaceInfoQueryRequest
+     * @return
+     */
+    @NotNull
+    private BaseResponse<Page<InterfaceInfoVO>> getPageBaseResponse(InterfaceInfoQueryRequest interfaceInfoQueryRequest, boolean isAdminPage) {
+        long current = interfaceInfoQueryRequest.getCurrent();
         long size = interfaceInfoQueryRequest.getPageSize();
-        String sortField = interfaceInfoQueryRequest.getSortField();
-        String sortOrder = interfaceInfoQueryRequest.getSortOrder();
-        String url = interfaceInfoQueryRequest.getUrl();
+        Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size),
+                this.getQueryWrapper(interfaceInfoQueryRequest, isAdminPage));
+        Page<InterfaceInfoVO> interfaceInfoVoPage = new PageDTO<>(interfaceInfoPage.getCurrent(), interfaceInfoPage.getSize(), interfaceInfoPage.getTotal());
+        List<InterfaceInfoVO> interfaceInfoVOList = interfaceInfoPage.getRecords().stream().map(interfaceInfo -> {
+            InterfaceInfoVO interfaceInfoVO = new InterfaceInfoVO();
+            BeanUtil.copyProperties(interfaceInfo, interfaceInfoVO);
+            return interfaceInfoVO;
+        }).collect(Collectors.toList());
+        interfaceInfoVoPage.setRecords(interfaceInfoVOList);
+        return ResultUtils.success(interfaceInfoVoPage);
+    }
+
+    /**
+     * 获取查询包装类
+     *
+     * @param interfaceInfoQueryRequest
+     * @return
+     */
+    private QueryWrapper<InterfaceInfo> getQueryWrapper(InterfaceInfoQueryRequest interfaceInfoQueryRequest, boolean isAdminPage) {
+        QueryWrapper<InterfaceInfo> queryWrapper = new QueryWrapper<>();
+        if (interfaceInfoQueryRequest == null) {
+            return queryWrapper;
+        }
 
         String name = interfaceInfoQueryRequest.getName();
-        long current = interfaceInfoQueryRequest.getCurrent();
+        String returnFormat = interfaceInfoQueryRequest.getReturnFormat();
+        String url = interfaceInfoQueryRequest.getUrl();
+        Long userId = interfaceInfoQueryRequest.getUserId();
+        Integer reduceScore = interfaceInfoQueryRequest.getReduceScore();
         String method = interfaceInfoQueryRequest.getMethod();
         String description = interfaceInfoQueryRequest.getDescription();
         Integer status = interfaceInfoQueryRequest.getStatus();
-        Integer reduceScore = interfaceInfoQueryRequest.getReduceScore();
-        String returnFormat = interfaceInfoQueryRequest.getReturnFormat();
-        // 限制爬虫
-        if (size > CRAWLER_NUM) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        String sortField = interfaceInfoQueryRequest.getSortField();
+        String sortOrder = interfaceInfoQueryRequest.getSortOrder();
+        // 拼接查询条件
+        boolean nameNotBlank = StringUtils.isNotBlank(name);
+        boolean descriptionNotBlank = StringUtils.isNotBlank(description);
+        if (isAdminPage) {
+            // 管理界面查询使用 and 操作
+            queryWrapper.like(nameNotBlank, "name", name)
+                    .like(descriptionNotBlank, "description", description);
+        } else {
+            queryWrapper.and(nameNotBlank || descriptionNotBlank, qw -> qw
+                    .like(nameNotBlank, "name", name)
+                    .or().like(descriptionNotBlank, "description", description));
         }
-        QueryWrapper<InterfaceInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(StringUtils.isNotBlank(name), "name", name)
-                .like(StringUtils.isNotBlank(description), "description", description)
-                .like(StringUtils.isNotBlank(url), "url", url)
-                .like(StringUtils.isNotBlank(returnFormat), "returnFormat", returnFormat)
+        queryWrapper.like(StringUtils.isNotBlank(url), "url", url)
+                .eq(StringUtils.isNotBlank(returnFormat), "returnFormat", returnFormat)
                 .eq(StringUtils.isNotBlank(method), "method", method)
                 .eq(ObjectUtils.isNotEmpty(status), "status", status)
-                .eq(ObjectUtils.isNotEmpty(reduceScore), "reduceScore", reduceScore);
-        queryWrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
-        queryWrapper.select("id",
-                "name",
-                "description",
-                "status",
-                "totalInvokes",
-                "avatarUrl"
-        );
-        Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size), queryWrapper);
-        User user = userService.isTourist(request);
-        // 不是管理员只能查看已经上线的
-        if (user == null || !user.getUserRole().equals(ADMIN_ROLE)) {
-            List<InterfaceInfo> interfaceInfoList = interfaceInfoPage.getRecords().stream()
-                    .filter(interfaceInfo -> interfaceInfo.getStatus().equals(InterfaceStatusEnum.ONLINE.getValue())).collect(Collectors.toList());
-            interfaceInfoPage.setRecords(interfaceInfoList);
-        }
-        return ResultUtils.success(interfaceInfoPage);
+                .eq(ObjectUtils.isNotEmpty(reduceScore), "reduceScore", reduceScore)
+                .eq(ObjectUtils.isNotEmpty(userId), "userId", userId)
+                .orderBy(StringUtils.isNotBlank(sortField), sortOrder.equals(SORT_ORDER_ASC), sortField)
+                .orderBy(true, false, "updateTime")
+                .select("id",
+                        "name",
+                        "description",
+                        "status",
+                        "totalInvokes",
+                        "avatarUrl",
+                        "method",
+                        "url",
+                        "reduceScore",
+                        "userId",
+                        "updateTime"
+                );
+        return queryWrapper;
     }
 
     /**

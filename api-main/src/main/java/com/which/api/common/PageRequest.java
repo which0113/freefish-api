@@ -1,7 +1,9 @@
 package com.which.api.common;
 
-import com.which.api.constant.CommonConstant;
 import lombok.Data;
+
+import static com.which.api.constant.CommonConstant.SORT_ORDER_DESC;
+import static com.which.api.constant.CommonConstant.UPDATE_TIME;
 
 /**
  * 分页请求
@@ -24,10 +26,10 @@ public class PageRequest {
     /**
      * 排序字段
      */
-    private String sortField;
+    private String sortField = UPDATE_TIME;
 
     /**
-     * 排序顺序（默认升序）
+     * 排序顺序
      */
-    private String sortOrder = CommonConstant.SORT_ORDER_ASC;
+    private String sortOrder = SORT_ORDER_DESC;
 }

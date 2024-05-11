@@ -55,7 +55,7 @@ public class GlobalWebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/user/**")
                 .addPathPatterns("/file/**")
                 .excludePathPatterns("/interfaceInfo/get")
-                .excludePathPatterns("/interfaceInfo/searchText")
+                .excludePathPatterns("/interfaceInfo/search/list/page")
                 .excludePathPatterns("/interfaceInfo/list/page")
                 .excludePathPatterns("/user/login")
                 .excludePathPatterns("/user/register")

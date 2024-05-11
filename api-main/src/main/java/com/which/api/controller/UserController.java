@@ -1,5 +1,6 @@
 package com.which.api.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -7,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.which.api.annotation.AuthCheck;
 import com.which.api.common.DeleteRequest;
 import com.which.api.common.IdRequest;
+import com.which.api.exception.ThrowUtils;
 import com.which.api.model.dto.user.*;
 import com.which.api.model.dto.user.email.UserBindEmailRequest;
 import com.which.api.model.dto.user.email.UserEmailLoginRequest;
@@ -16,6 +18,7 @@ import com.which.api.model.entity.User;
 import com.which.api.model.enums.UserStatusEnum;
 import com.which.api.model.vo.UserLoginVO;
 import com.which.api.service.UserService;
+import com.which.api.utils.SqlUtils;
 import com.which.apicommon.common.BaseResponse;
 import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
@@ -24,7 +27,7 @@ import com.which.apicommon.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.which.api.constant.CommonConstant.SORT_ORDER_ASC;
 import static com.which.api.constant.UserConstant.ADMIN_ROLE;
 
 /**
@@ -138,7 +142,7 @@ public class UserController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User user = new User();
-        BeanUtils.copyProperties(userAddRequest, user);
+        BeanUtil.copyProperties(userAddRequest, user);
         // 校验
         userService.validUser(user, true);
         boolean result = userService.save(user);
@@ -193,7 +197,7 @@ public class UserController {
         }
 
         User user = new User();
-        BeanUtils.copyProperties(userUpdateRequest, user);
+        BeanUtil.copyProperties(userUpdateRequest, user);
         // 参数校验
         userService.validUser(user, false);
 
@@ -205,7 +209,7 @@ public class UserController {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "更新失败");
         }
         UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(userService.getById(user.getId()), userVO);
+        BeanUtil.copyProperties(userService.getById(user.getId()), userVO);
         return ResultUtils.success(userVO);
     }
 
@@ -222,33 +226,8 @@ public class UserController {
         }
         User user = userService.getById(id);
         UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user, userVO);
+        BeanUtil.copyProperties(user, userVO);
         return ResultUtils.success(userVO);
-    }
-
-    /**
-     * 获取用户列表
-     *
-     * @param userQueryRequest
-     * @return
-     */
-    @GetMapping("/list")
-    @AuthCheck(mustRole = ADMIN_ROLE)
-    public BaseResponse<List<UserVO>> listUser(UserQueryRequest userQueryRequest) {
-        if (null == userQueryRequest) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        User userQuery = new User();
-        BeanUtils.copyProperties(userQueryRequest, userQuery);
-
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>(userQuery);
-        List<User> userList = userService.list(queryWrapper);
-        List<UserVO> userVOList = userList.stream().map(user -> {
-            UserVO userVO = new UserVO();
-            BeanUtils.copyProperties(user, userVO);
-            return userVO;
-        }).collect(Collectors.toList());
-        return ResultUtils.success(userVOList);
     }
 
     /**
@@ -259,34 +238,104 @@ public class UserController {
      */
     @GetMapping("/list/page")
     public BaseResponse<Page<UserVO>> listUserByPage(UserQueryRequest userQueryRequest) {
-        User userQuery = new User();
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        return this.getPageBaseResponse(userQueryRequest, true);
+    }
 
-        BeanUtils.copyProperties(userQueryRequest, userQuery);
+    /**
+     * 分页获取当前用户的数据
+     *
+     * @param userQueryRequest
+     * @param request
+     * @return
+     */
+    @GetMapping("/search/list/page")
+    public BaseResponse<Page<UserVO>> listUserBySearchPage(UserQueryRequest userQueryRequest, HttpServletRequest request) {
+        if (userQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 限制爬虫
+        ThrowUtils.throwIf(userQueryRequest.getPageSize() > 20, ErrorCode.PARAMS_ERROR);
+        return this.getPageBaseResponse(userQueryRequest, false);
+    }
 
-        String userName = userQueryRequest.getUserName();
-        String userAccount = userQueryRequest.getUserAccount();
-        String gender = userQueryRequest.getGender();
-        String userRole = userQueryRequest.getUserRole();
+    /**
+     * 获取 PageVO BaseResponse
+     *
+     * @param userQueryRequest
+     * @return
+     */
+    @NotNull
+    private BaseResponse<Page<UserVO>> getPageBaseResponse(UserQueryRequest userQueryRequest, boolean isAdminPage) {
         long current = userQueryRequest.getCurrent();
-        long pageSize = userQueryRequest.getPageSize();
-
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(StringUtils.isNotBlank(userName), "userName", userName)
-                .eq(StringUtils.isNotBlank(userAccount), "userAccount", userAccount)
-                .eq(StringUtils.isNotBlank(gender), "gender", gender)
-                .eq(StringUtils.isNotBlank(userRole), "userRole", userRole);
-        Page<User> userPage = userService.page(new Page<>(current, pageSize), queryWrapper);
+        long size = userQueryRequest.getPageSize();
+        Page<User> userPage = userService.page(new Page<>(current, size),
+                this.getQueryWrapper(userQueryRequest, isAdminPage));
         Page<UserVO> userVoPage = new PageDTO<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
         List<UserVO> userVOList = userPage.getRecords().stream().map(user -> {
             UserVO userVO = new UserVO();
-            BeanUtils.copyProperties(user, userVO);
+            BeanUtil.copyProperties(user, userVO);
             return userVO;
         }).collect(Collectors.toList());
         userVoPage.setRecords(userVOList);
         return ResultUtils.success(userVoPage);
+    }
+
+    /**
+     * 获取查询包装类
+     *
+     * @param userQueryRequest
+     * @return
+     */
+    private QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest, boolean isAdminPage) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (userQueryRequest == null) {
+            return queryWrapper;
+        }
+        String userName = userQueryRequest.getUserName();
+        String userAccount = userQueryRequest.getUserAccount();
+        String gender = userQueryRequest.getGender();
+        String userRole = userQueryRequest.getUserRole();
+        String sortField = userQueryRequest.getSortField();
+        String sortOrder = userQueryRequest.getSortOrder();
+        // 拼接查询条件
+        boolean userNameNotBlank = StringUtils.isNotBlank(userName);
+        boolean userAccountNotBlank = StringUtils.isNotBlank(userAccount);
+        boolean genderNotEmpty = ObjectUtils.isNotEmpty(gender);
+        boolean userRoleNotEmpty = ObjectUtils.isNotEmpty(userRole);
+        if (isAdminPage) {
+            // 管理界面查询使用 and 操作
+            queryWrapper.like(userNameNotBlank, "userName", userName)
+                    .like(userAccountNotBlank, "userAccount", userAccount)
+                    .eq(genderNotEmpty, "gender", gender)
+                    .eq(userRoleNotEmpty, "userRole", userRole);
+        } else {
+            queryWrapper.and(userNameNotBlank || userAccountNotBlank || genderNotEmpty || userRoleNotEmpty, qw -> qw
+                    .like(userNameNotBlank, "userName", userName)
+                    .or().like(userAccountNotBlank, "userAccount", userAccount)
+                    .or().like(genderNotEmpty, "gender", gender)
+                    .or().like(userRoleNotEmpty, "userRole", userRole));
+        }
+        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(SORT_ORDER_ASC), sortField)
+                .orderBy(true, false, "updateTime")
+                .select("id",
+                        "userName",
+                        "email",
+                        "invitationCode",
+                        "status",
+                        "balance",
+                        "userAccount",
+                        "userAvatar",
+                        "accessKey",
+                        "secretKey",
+                        "gender",
+                        "userRole",
+                        "createTime",
+                        "updateTime"
+                );
+        return queryWrapper;
     }
 
     /**
@@ -302,7 +351,7 @@ public class UserController {
         }
         UserVO loginUser = userService.getLoginUser(request);
         User user = new User();
-        BeanUtils.copyProperties(loginUser, user);
+        BeanUtil.copyProperties(loginUser, user);
         UserVO userVO = userService.updateVoucher(user);
         return ResultUtils.success(userVO);
     }
@@ -357,7 +406,8 @@ public class UserController {
      * @return
      */
     @PostMapping("/email/login")
-    public BaseResponse<UserVO> userEmailLogin(@RequestBody UserEmailLoginRequest userEmailLoginRequest, HttpServletRequest request) {
+    public BaseResponse<UserVO> userEmailLogin(@RequestBody UserEmailLoginRequest
+                                                       userEmailLoginRequest, HttpServletRequest request) {
         throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 
@@ -369,7 +419,8 @@ public class UserController {
      * @return
      */
     @PostMapping("/bind/login")
-    public BaseResponse<UserVO> userBindEmail(@RequestBody UserBindEmailRequest userBindEmailRequest, HttpServletRequest request) {
+    public BaseResponse<UserVO> userBindEmail(@RequestBody UserBindEmailRequest
+                                                      userBindEmailRequest, HttpServletRequest request) {
         throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 
@@ -381,7 +432,8 @@ public class UserController {
      * @return
      */
     @PostMapping("/unbindEmail")
-    public BaseResponse<UserVO> userUnBindEmail(@RequestBody UserUnBindEmailRequest userUnBindEmailRequest, HttpServletRequest request) {
+    public BaseResponse<UserVO> userUnBindEmail(@RequestBody UserUnBindEmailRequest
+                                                        userUnBindEmailRequest, HttpServletRequest request) {
         throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 
@@ -402,8 +454,8 @@ public class UserController {
      * @param emailAccount 电子邮件账号
      * @return
      */
-    @GetMapping("/getCaptcha")
-    public BaseResponse<Boolean> getCaptcha(String emailAccount) {
+    @GetMapping("/email/getCaptcha")
+    public BaseResponse<Boolean> getEmailCaptcha(String emailAccount) {
         throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 

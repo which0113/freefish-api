@@ -24,7 +24,11 @@ public enum UserRoleEnum {
     /**
      * 管理员
      */
-    ADMIN("管理员", "admin");
+    ADMIN("管理员", "admin"),
+    /**
+     * 演示号
+     */
+    DEMO("演示号", "demo");
 
     private final String text;
 

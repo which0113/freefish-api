@@ -59,7 +59,7 @@ public class UserLoginVO implements Serializable {
      */
     private String gender;
     /**
-     * 用户角色: user, admin
+     * 用户角色
      */
     private String userRole;
     /**

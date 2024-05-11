@@ -15,6 +15,10 @@ public class ChartAddRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 图表名称
+     */
+    private String name;
+    /**
      * 分析目标
      */
     private String goal;

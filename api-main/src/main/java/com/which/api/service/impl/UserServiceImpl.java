@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -128,7 +127,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setAccessKey(accessKey);
             user.setSecretKey(secretKey);
             user.setInvitationCode(generateRandomString(8));
-            user.setUserRole(UserRoleEnum.USER.getValue());
+            // 游客
+            user.setUserRole(UserRoleEnum.VISITOR.getValue());
             boolean saveResult = this.save(user);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
@@ -211,6 +211,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (user.getStatus().equals(UserStatusEnum.BAN.getValue())) {
             throw new BusinessException(ErrorCode.PROHIBITED, "账号已封禁");
         }
+        // visitor 登录后成为 user
+        if (user.getUserRole().equals(UserRoleEnum.VISITOR.getValue())) {
+            user.setUserRole(UserRoleEnum.USER.getValue());
+        }
         int update = userMapper.updateById(user);
         if (update == 0) {
             log.error("账号更新异常，userId：{}", user.getId());
@@ -222,13 +226,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String tokenKey = USER_LOGIN_KEY + token;
         // 3.2 保存userVO到redis缓存
         UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user, userVO);
+        BeanUtil.copyProperties(user, userVO);
         Map<String, Object> userMap = BeanUtil.beanToMap(userVO);
         redisTemplate.opsForHash().putAll(tokenKey, userMap);
         redisTemplate.expire(tokenKey, USER_LOGIN_TTL, TimeUnit.DAYS);
         // 4 设置token响应前端
         UserLoginVO userLoginVO = new UserLoginVO();
-        BeanUtils.copyProperties(userVO, userLoginVO);
+        BeanUtil.copyProperties(userVO, userLoginVO);
         userLoginVO.setToken(token);
         return userLoginVO;
     }
@@ -250,7 +254,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PROHIBITED, "账号已封禁");
         }
         UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user, userVO);
+        BeanUtil.copyProperties(user, userVO);
         return userVO;
     }
 
@@ -264,6 +268,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         long userId = currentUser.getId();
         User user = this.getById(userId);
         return user != null && ADMIN_ROLE.equals(user.getUserRole());
+    }
+
+    @Override
+    public boolean isDemo(HttpServletRequest request) {
+        UserVO currentUser = redissonManager.getUserByRequest(request);
+        if (currentUser == null || currentUser.getId() == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+        }
+        // 从数据库查询（追求性能的话可以注释，直接走缓存）
+        long userId = currentUser.getId();
+        User user = this.getById(userId);
+        return user != null && DEMO_ROLE.equals(user.getUserRole());
     }
 
     @Override
@@ -341,7 +357,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
         }
         UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(loginUser, userVO);
+        BeanUtil.copyProperties(loginUser, userVO);
         return userVO;
     }
 

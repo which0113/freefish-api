@@ -8,6 +8,11 @@ package com.which.api.constant;
 public interface UserConstant {
 
     /**
+     * 游客角色
+     */
+    String VISITOR_ROLE = "visitor";
+
+    /**
      * 默认角色
      */
     String DEFAULT_ROLE = "user";
@@ -16,6 +21,11 @@ public interface UserConstant {
      * 管理员角色
      */
     String ADMIN_ROLE = "admin";
+
+    /**
+     * 演示角色
+     */
+    String DEMO_ROLE = "demo";
 
     /**
      * 盐值，混淆密码
