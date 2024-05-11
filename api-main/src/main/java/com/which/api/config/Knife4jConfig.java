@@ -2,7 +2,6 @@ package com.which.api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -13,18 +12,16 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Knife4j 接口文档配置
- * todo 生产环境关闭
  *
  * @author which
  */
 @Configuration
 @EnableSwagger2
-@Profile({"dev", "local", "test"})
 public class Knife4jConfig {
 
     @Bean
-    public Docket defaultApi2() {
-        return new Docket(DocumentationType.SWAGGER_2)
+    public Docket openApi3() {
+        return new Docket(DocumentationType.OAS_30)
                 .apiInfo(new ApiInfoBuilder()
                         .title("咸鱼API")
                         .description("咸鱼API接口文档")
