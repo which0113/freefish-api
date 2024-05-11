@@ -1,7 +1,5 @@
 package com.which.apicommon.model.emums;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +45,7 @@ public enum UserStatusEnum {
      * @return
      */
     public static UserStatusEnum getEnumByValue(Integer value) {
-        if (ObjectUtils.isEmpty(value)) {
+        if (value == null) {
             return null;
         }
         for (UserStatusEnum anEnum : UserStatusEnum.values()) {
