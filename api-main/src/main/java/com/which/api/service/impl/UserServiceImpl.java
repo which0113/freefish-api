@@ -83,7 +83,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
         }
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短");
         }
         //  5. 账户不包含特殊字符
         // 匹配由数字、小写字母、大写字母组成的字符串,且字符串的长度至少为1个字符
@@ -191,7 +191,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短，不能小于4位");
         }
         if (userPassword.length() < 8) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短，不能低于8位字符");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
         }
         // 账户不包含特殊字符，匹配由数字、小写字母、大写字母组成的字符串，且字符串的长度至少为1个字符
         String pattern = "[0-9a-zA-Z]+";
@@ -328,7 +328,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         // 管理员才会在管理页面更新密码
         if (ADMIN_ROLE.equals(user.getUserRole()) && userPassword.length() < 8) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短，不能低于8位字符");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
         }
         // 账户不包含特殊字符，匹配由数字、小写字母、大写字母组成的字符串，且字符串的长度至少为1个字符
         String pattern = "[0-9a-zA-Z]+";
@@ -374,7 +374,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = this.getById(userId);
         String encryptOldPassword = DigestUtils.md5DigestAsHex((SALT + userOldPassword).getBytes());
         if (!encryptOldPassword.equals(user.getUserPassword())) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码错误");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码错误");
         }
         String encryptNewPassword = DigestUtils.md5DigestAsHex((SALT + userNewPassword).getBytes());
 
