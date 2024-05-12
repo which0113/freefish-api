@@ -69,9 +69,8 @@ public class ChartController {
 
         String name = chartAddRequest.getName();
         String goal = chartAddRequest.getGoal();
-        String chartData = chartAddRequest.getChartData();
         String chartType = chartAddRequest.getChartType();
-        if (StringUtils.isAnyBlank(name, goal, chartData, chartType)) {
+        if (StringUtils.isAnyBlank(name, goal, chartType)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
@@ -130,9 +129,8 @@ public class ChartController {
 
         String name = chartUpdateRequest.getName();
         String goal = chartUpdateRequest.getGoal();
-        String chartData = chartUpdateRequest.getChartData();
         String chartType = chartUpdateRequest.getChartType();
-        if (StringUtils.isAnyBlank(name, goal, chartData, chartType)) {
+        if (StringUtils.isAnyBlank(name, goal, chartType)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
