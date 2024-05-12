@@ -222,7 +222,7 @@ public class UserController {
         if (ObjectUtils.anyNull(userUpdatePasswordRequest, userUpdatePasswordRequest.getId()) || userUpdatePasswordRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean updatePassword = userService.updatePassword(userUpdatePasswordRequest);
+        boolean updatePassword = userService.updatePassword(userUpdatePasswordRequest, request);
         return ResultUtils.success(updatePassword);
     }
 

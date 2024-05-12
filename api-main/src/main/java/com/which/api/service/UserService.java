@@ -94,8 +94,10 @@ public interface UserService extends IService<User> {
      * 更新密码
      *
      * @param userUpdatePasswordRequest 用户更新密码请求
+     * @param request                   请求
+     * @return boolean
      */
-    boolean updatePassword(UserUpdatePasswordRequest userUpdatePasswordRequest);
+    boolean updatePassword(UserUpdatePasswordRequest userUpdatePasswordRequest, HttpServletRequest request);
 
     /**
      * 更新用户凭证
