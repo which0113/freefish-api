@@ -66,6 +66,15 @@ public class ChartController {
         if (chartAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+
+        String name = chartAddRequest.getName();
+        String goal = chartAddRequest.getGoal();
+        String chartData = chartAddRequest.getChartData();
+        String chartType = chartAddRequest.getChartType();
+        if (StringUtils.isAnyBlank(name, goal, chartData, chartType)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
         Chart chart = new Chart();
         BeanUtil.copyProperties(chartAddRequest, chart);
         UserVO loginUser = userService.getLoginUser(request);
@@ -118,6 +127,15 @@ public class ChartController {
         if (chartUpdateRequest == null || chartUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+
+        String name = chartUpdateRequest.getName();
+        String goal = chartUpdateRequest.getGoal();
+        String chartData = chartUpdateRequest.getChartData();
+        String chartType = chartUpdateRequest.getChartType();
+        if (StringUtils.isAnyBlank(name, goal, chartData, chartType)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
         Chart chart = new Chart();
         BeanUtil.copyProperties(chartUpdateRequest, chart);
         UserVO loginUser = userService.getLoginUser(request);

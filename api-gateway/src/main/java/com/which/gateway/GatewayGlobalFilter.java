@@ -54,19 +54,16 @@ import static com.which.gateway.constant.RedisConstant.GATEWAY_SERVER_KEY;
 @Slf4j
 public class GatewayGlobalFilter implements GlobalFilter, Ordered {
 
-    @Resource
-    private ApiClientConfig apiClientConfig;
-
     /**
      * 请求白名单
      */
     private final static List<String> WHITE_HOST_LIST = Arrays.asList("127.0.0.1");
-
     /**
      * 五分钟过期时间
      */
     private static final long FIVE_MINUTES = 5L * 60;
-
+    @Resource
+    private ApiClientConfig apiClientConfig;
     @DubboReference
     private InnerUserService innerUserService;
 

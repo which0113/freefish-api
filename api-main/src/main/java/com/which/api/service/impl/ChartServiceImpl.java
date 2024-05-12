@@ -50,9 +50,12 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
 
     @Override
     public BiVO genChartByAi(MultipartFile multipartFile, GenChartByAiRequest genChartByAiRequest, HttpServletRequest request) {
+        if (multipartFile == null || genChartByAiRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数错误");
+        }
+
         UserVO loginUser = userService.getLoginUser(request);
         Long userId = loginUser.getId();
-
         if (loginUser.getBalance() <= 0) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "积分不足");
         }
@@ -64,8 +67,8 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
         String goal = genChartByAiRequest.getGoal();
         String chartType = genChartByAiRequest.getChartType();
         ThrowUtils.throwIf(StringUtils.isBlank(goal), ErrorCode.PARAMS_ERROR, "分析目标为空");
-        ThrowUtils.throwIf(StringUtils.isNotBlank(name) && name.length() > 200,
-                ErrorCode.PARAMS_ERROR, "名称过长");
+        ThrowUtils.throwIf(StringUtils.isBlank(name), ErrorCode.PARAMS_ERROR, "名称为空");
+        ThrowUtils.throwIf(name.length() > 200, ErrorCode.PARAMS_ERROR, "名称过长");
         ThrowUtils.throwIf(StringUtils.isBlank(chartType), ErrorCode.PARAMS_ERROR, "类型为空");
         // 校验文件 multipartFile
         String originalFilename = multipartFile.getOriginalFilename();
