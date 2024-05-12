@@ -3,8 +3,6 @@ package com.which.api.controller;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.google.gson.Gson;
@@ -26,7 +24,9 @@ import com.which.apisdk.model.request.CurrencyRequest;
 import com.which.apisdk.model.response.ResultResponse;
 import com.which.apisdk.service.ApiService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -81,6 +81,15 @@ public class InterfaceInfoController {
         if (interfaceInfoAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+
+        String name = interfaceInfoAddRequest.getName();
+        String url = interfaceInfoAddRequest.getUrl();
+        String method = interfaceInfoAddRequest.getMethod();
+        Integer reduceScore = interfaceInfoAddRequest.getReduceScore();
+        if (StringUtils.isAnyBlank(name, url, method) || reduceScore <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
         InterfaceInfo interfaceInfo = new InterfaceInfo();
         if (CollectionUtils.isNotEmpty(interfaceInfoAddRequest.getRequestParams())) {
             List<RequestParamsField> requestParamsFields = interfaceInfoAddRequest.getRequestParams().stream()
@@ -149,9 +158,14 @@ public class InterfaceInfoController {
     @Transactional(rollbackFor = Exception.class)
     public BaseResponse<Boolean> updateInterfaceInfo(@RequestBody InterfaceInfoUpdateRequest interfaceInfoUpdateRequest,
                                                      HttpServletRequest request) {
-        if (ObjectUtils.anyNull(interfaceInfoUpdateRequest, interfaceInfoUpdateRequest.getId()) || interfaceInfoUpdateRequest.getId() <= 0) {
+        String name = interfaceInfoUpdateRequest.getName();
+        String url = interfaceInfoUpdateRequest.getUrl();
+        String method = interfaceInfoUpdateRequest.getMethod();
+        Integer reduceScore = interfaceInfoUpdateRequest.getReduceScore();
+        if (StringUtils.isAnyBlank(name, url, method) || reduceScore <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+
         InterfaceInfo interfaceInfo = new InterfaceInfo();
         if (CollectionUtils.isNotEmpty(interfaceInfoUpdateRequest.getRequestParams())) {
             List<RequestParamsField> requestParamsFields = interfaceInfoUpdateRequest.getRequestParams().stream().filter(field -> StringUtils.isNotBlank(field.getFieldName())).collect(Collectors.toList());
