@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.which.api.annotation.AuthCheck;
 import com.which.api.exception.ThrowUtils;
 import com.which.api.service.UserService;
+import com.which.api.utils.CodeUtils;
 import com.which.api.utils.SqlUtils;
 import com.which.apicommon.common.*;
 import com.which.apicommon.model.dto.user.*;
@@ -132,7 +133,7 @@ public class UserController {
      */
     @PostMapping("/add")
     @AuthCheck(mustRole = ADMIN_ROLE)
-    public BaseResponse<Long> addUser(@RequestBody UserAddRequest userAddRequest) {
+    public BaseResponse<Long> addUser(@RequestBody UserAddRequest userAddRequest, HttpServletRequest request) {
         if (userAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -140,6 +141,7 @@ public class UserController {
         BeanUtil.copyProperties(userAddRequest, user);
         // 校验
         userService.validUser(user, true);
+        user.setInvitationCode(CodeUtils.generateRandomString(8));
         boolean result = userService.save(user);
         if (!result) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR);

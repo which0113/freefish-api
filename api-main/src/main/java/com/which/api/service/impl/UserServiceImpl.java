@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.which.api.manager.RedissonManager;
 import com.which.api.mapper.UserMapper;
 import com.which.api.service.UserService;
+import com.which.api.utils.CodeUtils;
 import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
 import com.which.apicommon.model.dto.user.UserLoginRequest;
@@ -35,7 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static com.which.apicommon.constant.CommonConstant.CHECKIN_BALANCE;
@@ -127,7 +127,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setUserName(userName);
             user.setAccessKey(accessKey);
             user.setSecretKey(secretKey);
-            user.setInvitationCode(generateRandomString(8));
+            user.setInvitationCode(CodeUtils.generateRandomString(8));
             // 游客
             user.setUserRole(UserRoleEnum.VISITOR.getValue());
             boolean saveResult = this.save(user);
@@ -223,7 +223,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         // 3 记录用户的登录态到redis
         // 3.1 生成128位的token
-        String token = this.generateRandomString(128);
+        String token = CodeUtils.generateRandomString(128);
         String tokenKey = USER_LOGIN_KEY + token;
         // 3.2 保存userVO到redis缓存
         UserVO userVO = new UserVO();
@@ -318,20 +318,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String userPassword = user.getUserPassword();
         Long balance = user.getBalance();
 
-        // 创建时，所有参数必须非空
         if (add) {
             if (StringUtils.isAnyBlank(userAccount, userPassword)) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR);
             }
-            // 添加用户生成8位邀请码
-            user.setInvitationCode(generateRandomString(8));
-        }
-        // 管理员才会在管理页面更新密码
-        if (ADMIN_ROLE.equals(user.getUserRole())) {
-            if (StringUtils.isBlank(userPassword) && userPassword.length() < 8) {
+            if (userPassword.length() < 8) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
             }
+        } else {
+            // 如果密码不为空
+            if (userPassword != null) {
+                // 长度不能小于8
+                if (userPassword.length() < 8) {
+                    throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
+                }
+                // 不能是空白（可以为空）
+                if (!userPassword.trim().isEmpty()) {
+                    throw new BusinessException(ErrorCode.PARAMS_ERROR);
+                }
+            }
+            // 为空表示不更新密码
         }
+
         // 账户不包含特殊字符，匹配由数字、小写字母、大写字母组成的字符串，且字符串的长度至少为1个字符
         String pattern = "[0-9a-zA-Z]+";
         if (StringUtils.isNotBlank(userAccount) && !userAccount.matches(pattern)) {
@@ -424,22 +432,5 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return this.update(userLambdaUpdateWrapper);
     }
 
-    /**
-     * 生成随机字符串
-     *
-     * @param length 长度
-     * @return
-     */
-    private String generateRandomString(int length) {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder sb = new StringBuilder(length);
-        Random random = new Random();
-        for (int i = 0; i < length; i++) {
-            int index = random.nextInt(characters.length());
-            char randomChar = characters.charAt(index);
-            sb.append(randomChar);
-        }
-        return sb.toString();
-    }
 
 }

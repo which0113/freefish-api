@@ -85,8 +85,8 @@ public interface UserService extends IService<User> {
     /**
      * 校验
      *
-     * @param add  是否为创建校验
      * @param user 接口信息
+     * @param add
      */
     void validUser(User user, boolean add);
 
