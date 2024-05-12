@@ -3,18 +3,14 @@ package com.which.api.ws;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 通知服务
+ * WebSocket 通知服务
  *
  * @author which
  */
@@ -26,7 +22,7 @@ public class WebSocketNotificationService {
     /**
      * 会话 map
      */
-    private static final Map<String, Session> SESSION_MAP = new HashMap<>();
+    private static final ConcurrentHashMap<String, Session> SESSION_MAP = new ConcurrentHashMap<>();
 
     /**
      * 连接建立成功调用的方法
@@ -36,9 +32,9 @@ public class WebSocketNotificationService {
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("sid") String sid) {
+        SESSION_MAP.put(sid, session);
         if (!SESSION_MAP.containsKey(sid)) {
             log.info("客户端：{} 建立连接", sid);
-            SESSION_MAP.put(sid, session);
         }
     }
 
@@ -60,8 +56,21 @@ public class WebSocketNotificationService {
      */
     @OnClose
     public void onClose(@PathParam("sid") String sid) {
-        log.info("连接断开：{}", sid);
-        SESSION_MAP.remove(sid);
+        if (SESSION_MAP.containsKey(sid)) {
+            SESSION_MAP.remove(sid);
+            log.info("客户端：{} 断开连接", sid);
+        }
+    }
+
+    /**
+     * 连接失败调用的方法
+     *
+     * @param session 会话
+     * @param t       t
+     */
+    @OnError
+    public void onError(Session session, Throwable t) {
+        log.info("客户端：{} 连接失败", t.getMessage());
     }
 
     /**
@@ -79,7 +88,7 @@ public class WebSocketNotificationService {
                 log.error("发送通知给客户端失败", e);
             }
         } else {
-            log.warn("用户 {} 不在线，无法发送通知", sid);
+            log.warn("客户端 {} 不在线，无法发送通知", sid);
         }
     }
 
