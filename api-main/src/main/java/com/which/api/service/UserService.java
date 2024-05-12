@@ -3,6 +3,7 @@ package com.which.api.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.which.apicommon.model.dto.user.UserLoginRequest;
 import com.which.apicommon.model.dto.user.UserRegisterRequest;
+import com.which.apicommon.model.dto.user.UserUpdatePasswordRequest;
 import com.which.apicommon.model.entity.User;
 import com.which.apicommon.model.vo.UserLoginVO;
 import com.which.apicommon.model.vo.UserVO;
@@ -88,6 +89,13 @@ public interface UserService extends IService<User> {
      * @param user 接口信息
      */
     void validUser(User user, boolean add);
+
+    /**
+     * 更新密码
+     *
+     * @param userUpdatePasswordRequest 用户更新密码请求
+     */
+    boolean updatePassword(UserUpdatePasswordRequest userUpdatePasswordRequest);
 
     /**
      * 更新用户凭证

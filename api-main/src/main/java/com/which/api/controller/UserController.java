@@ -187,7 +187,7 @@ public class UserController {
         if (adminOperation && !loginUser.getUserRole().equals(ADMIN_ROLE)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
-        if (!loginUser.getUserRole().equals(ADMIN_ROLE) && !userUpdateRequest.getId().equals(loginUser.getId())) {
+        if (!ADMIN_ROLE.equals(loginUser.getUserRole()) && !userUpdateRequest.getId().equals(loginUser.getId())) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "只有本人或管理员可以修改");
         }
 
@@ -206,6 +206,24 @@ public class UserController {
         UserVO userVO = new UserVO();
         BeanUtil.copyProperties(userService.getById(user.getId()), userVO);
         return ResultUtils.success(userVO);
+    }
+
+    /**
+     * 更新用户密码
+     *
+     * @param userUpdatePasswordRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/password/update")
+    @Transactional(rollbackFor = Exception.class)
+    public BaseResponse<Boolean> updateUserPassword(@RequestBody UserUpdatePasswordRequest userUpdatePasswordRequest,
+                                                    HttpServletRequest request) {
+        if (ObjectUtils.anyNull(userUpdatePasswordRequest, userUpdatePasswordRequest.getId()) || userUpdatePasswordRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        boolean updatePassword = userService.updatePassword(userUpdatePasswordRequest);
+        return ResultUtils.success(updatePassword);
     }
 
     /**

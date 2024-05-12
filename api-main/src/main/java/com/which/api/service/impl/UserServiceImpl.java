@@ -15,6 +15,7 @@ import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
 import com.which.apicommon.model.dto.user.UserLoginRequest;
 import com.which.apicommon.model.dto.user.UserRegisterRequest;
+import com.which.apicommon.model.dto.user.UserUpdatePasswordRequest;
 import com.which.apicommon.model.emums.UserRoleEnum;
 import com.which.apicommon.model.emums.UserStatusEnum;
 import com.which.apicommon.model.entity.User;
@@ -325,7 +326,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             // 添加用户生成8位邀请码
             user.setInvitationCode(generateRandomString(8));
         }
-        if (userPassword.length() < 8) {
+        // 管理员才会在管理页面更新密码
+        if (ADMIN_ROLE.equals(user.getUserRole()) && userPassword.length() < 8) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短，不能低于8位字符");
         }
         // 账户不包含特殊字符，匹配由数字、小写字母、大写字母组成的字符串，且字符串的长度至少为1个字符
@@ -349,6 +351,39 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
             }
         }
+    }
+
+    @Override
+    public boolean updatePassword(UserUpdatePasswordRequest userUpdatePasswordRequest) {
+        Long userId = userUpdatePasswordRequest.getId();
+
+        if (ObjectUtils.anyNull(userUpdatePasswordRequest, userId) || userId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        String userPassword = userUpdatePasswordRequest.getUserPassword();
+        String checkPassword = userUpdatePasswordRequest.getCheckPassword();
+
+        // 校验
+        if (StringUtils.isAnyBlank(userPassword, checkPassword)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
+        }
+        if (userPassword.length() < 8 || checkPassword.length() < 8) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
+        }
+        // 密码和校验密码相同
+        if (!userPassword.equals(checkPassword)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "两次输入的密码不一致");
+        }
+
+        // 加密
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+
+        User user = new User();
+        user.setId(userId);
+        user.setUserPassword(encryptPassword);
+
+        return this.save(user);
     }
 
     @Override
