@@ -209,7 +209,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
         }
         if (user.getStatus().equals(UserStatusEnum.BAN.getValue())) {
-            throw new BusinessException(ErrorCode.PROHIBITED, "账号已封禁");
+            throw new BusinessException(ErrorCode.PROHIBITED_ERROR, "账号已封禁");
         }
         // visitor 登录后成为 user
         if (user.getUserRole().equals(UserRoleEnum.VISITOR.getValue())) {
@@ -251,7 +251,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
         if (user.getStatus().equals(UserStatusEnum.BAN.getValue())) {
-            throw new BusinessException(ErrorCode.PROHIBITED, "账号已封禁");
+            throw new BusinessException(ErrorCode.PROHIBITED_ERROR, "账号已封禁");
         }
         UserVO userVO = new UserVO();
         BeanUtil.copyProperties(user, userVO);

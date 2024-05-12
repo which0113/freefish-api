@@ -13,6 +13,10 @@ public enum ErrorCode {
      */
     PARAMS_ERROR(40000, "请求参数错误"),
     /**
+     * 账号已封禁
+     */
+    PROHIBITED_ERROR(40001, "账号已封禁"),
+    /**
      * 未登录
      */
     NOT_LOGIN_ERROR(40100, "未登录"),
@@ -21,17 +25,13 @@ public enum ErrorCode {
      */
     NO_AUTH_ERROR(40101, "无权限"),
     /**
-     * 账号已封禁
+     * 禁止访问
      */
-    PROHIBITED(40001, "账号已封禁"),
+    FORBIDDEN_ERROR(40300, "禁止访问"),
     /**
      * 请求数据不存在
      */
     NOT_FOUND_ERROR(40400, "请求数据不存在"),
-    /**
-     * 禁止访问
-     */
-    FORBIDDEN_ERROR(40300, "禁止访问"),
     /**
      * 请求过于频繁
      */
