@@ -56,8 +56,8 @@ public class WebSocketNotificationService {
      */
     @OnClose
     public void onClose(@PathParam("sid") String sid) {
+        SESSION_MAP.remove(sid);
         if (SESSION_MAP.containsKey(sid)) {
-            SESSION_MAP.remove(sid);
             log.info("客户端：{} 断开连接", sid);
         }
     }
