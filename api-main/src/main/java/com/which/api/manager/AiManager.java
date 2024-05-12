@@ -31,7 +31,7 @@ public class AiManager {
     @Value("${open-ai-client.api-host}")
     private String apiHost;
 
-    public String doChat(String message) {
+    public String doChatByYuCongMing(String message) {
         DevChatRequest devChatRequest = new DevChatRequest();
         // 鱼聪明平台模型ID
         devChatRequest.setModelId(MODE_ID);
@@ -43,7 +43,7 @@ public class AiManager {
         return response.getData().getContent();
     }
 
-    public String doChatByGpt(String content) {
+    public String doChatByOpenAi(String content) {
         JSONArray messages = new JSONArray();
         JSONObject message = new JSONObject();
         message.set("role", "user");

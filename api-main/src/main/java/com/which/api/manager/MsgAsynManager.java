@@ -61,8 +61,15 @@ public class MsgAsynManager {
         }
         userIdStr = chart.getUserId().toString();
         String chartResult;
+        String userInput = buildUserInput(chart);
         try {
-            chartResult = aiManager.doChatByGpt(buildUserInput(chart));
+            try {
+                chartResult = aiManager.doChatByOpenAi(userInput);
+                log.info("用户 {} 使用了 OpenAI 分析图表", userIdStr);
+            } catch (Exception e) {
+                chartResult = aiManager.doChatByYuCongMing(userInput);
+                log.info("用户 {} 使用了 鱼聪明AI 分析图表", userIdStr);
+            }
         } catch (Exception e) {
             handleUpdateChartError(chartId, "AI 生成错误");
             return;

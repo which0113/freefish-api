@@ -73,7 +73,7 @@ public class BiMsgConsumer {
         userIdStr = chart.getUserId().toString();
         String chartResult;
         try {
-            chartResult = aiManager.doChatByGpt(this.buildUserInput(chart));
+            chartResult = aiManager.doChatByOpenAi(this.buildUserInput(chart));
         } catch (Exception e) {
             this.handleUpdateChartError(channel, deliveryTag, chartId, "AI 生成错误");
             return;
