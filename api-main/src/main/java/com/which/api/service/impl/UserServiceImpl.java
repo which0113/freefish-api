@@ -327,8 +327,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setInvitationCode(generateRandomString(8));
         }
         // 管理员才会在管理页面更新密码
-        if (ADMIN_ROLE.equals(user.getUserRole()) && userPassword.length() < 8) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
+        if (ADMIN_ROLE.equals(user.getUserRole())) {
+            if (StringUtils.isBlank(userPassword) && userPassword.length() < 8) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
+            }
         }
         // 账户不包含特殊字符，匹配由数字、小写字母、大写字母组成的字符串，且字符串的长度至少为1个字符
         String pattern = "[0-9a-zA-Z]+";
