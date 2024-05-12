@@ -361,29 +361,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
-        String userPassword = userUpdatePasswordRequest.getUserPassword();
-        String checkPassword = userUpdatePasswordRequest.getCheckPassword();
+        String userOldPassword = userUpdatePasswordRequest.getUserOldPassword();
+        String userNewPassword = userUpdatePasswordRequest.getUserNewPassword();
 
-        // 校验
-        if (StringUtils.isAnyBlank(userPassword, checkPassword)) {
+        if (StringUtils.isAnyBlank(userOldPassword, userNewPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
-        if (userPassword.length() < 8 || checkPassword.length() < 8) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
+        if (userNewPassword.length() < 8) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "新密码过短");
         }
-        // 密码和校验密码相同
-        if (!userPassword.equals(checkPassword)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "两次输入的密码不一致");
-        }
-
-        // 加密
-        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
 
         User user = this.getById(userId);
-        if (encryptPassword.equals(user.getUserPassword())) {
+        String encryptOldPassword = DigestUtils.md5DigestAsHex((SALT + userOldPassword).getBytes());
+        if (!encryptOldPassword.equals(user.getUserPassword())) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码错误");
+        }
+        String encryptNewPassword = DigestUtils.md5DigestAsHex((SALT + userNewPassword).getBytes());
+
+        // 新密码不能和旧密码一样
+        if (encryptNewPassword.equals(user.getUserPassword())) {
             return false;
         }
-        user.setUserPassword(encryptPassword);
+
+        user.setUserPassword(encryptNewPassword);
         return this.updateById(user);
     }
 

@@ -16,8 +16,14 @@ public class UserUpdatePasswordRequest implements Serializable {
 
     private Long id;
 
-    private String userPassword;
+    /**
+     * 用户旧密码
+     */
+    private String userOldPassword;
 
-    private String checkPassword;
+    /**
+     * 检查新密码
+     */
+    private String userNewPassword;
 
 }
