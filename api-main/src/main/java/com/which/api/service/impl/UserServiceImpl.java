@@ -379,11 +379,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 加密
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
 
-        User user = new User();
-        user.setId(userId);
+        User user = this.getById(userId);
+        if (encryptPassword.equals(user.getUserPassword())) {
+            return false;
+        }
         user.setUserPassword(encryptPassword);
-
-        return this.save(user);
+        return this.updateById(user);
     }
 
     @Override
