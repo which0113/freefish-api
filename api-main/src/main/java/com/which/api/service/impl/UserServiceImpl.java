@@ -354,7 +354,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public boolean updatePassword(UserUpdatePasswordRequest userUpdatePasswordRequest) {
+    public boolean updatePassword(UserUpdatePasswordRequest userUpdatePasswordRequest, HttpServletRequest request) {
         Long userId = userUpdatePasswordRequest.getId();
 
         if (ObjectUtils.anyNull(userUpdatePasswordRequest, userId) || userId <= 0) {
@@ -372,6 +372,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         User user = this.getById(userId);
+        UserVO loginUser = this.getLoginUser(request);
+        if (!ADMIN_ROLE.equals(user.getUserRole()) && !userId.equals(loginUser.getId())) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "只有本人或管理员可以修改");
+        }
         String encryptOldPassword = DigestUtils.md5DigestAsHex((SALT + userOldPassword).getBytes());
         if (!encryptOldPassword.equals(user.getUserPassword())) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码错误");
