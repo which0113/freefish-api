@@ -251,6 +251,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
         if (user.getStatus().equals(UserStatusEnum.BAN.getValue())) {
+            // 移除登录态
+            String tokenKey = redissonManager.getTokenKeyByRequest(request);
+            redisTemplate.delete(tokenKey);
             throw new BusinessException(ErrorCode.PROHIBITED_ERROR, "账号已封禁");
         }
         UserVO userVO = new UserVO();
