@@ -100,7 +100,12 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
             userGoal += "，请使用" + chartType;
         }
         // 压缩后的数据
-        String csvData = ExcelUtils.excelToCsv(multipartFile);
+        String csvData;
+        try {
+            csvData = ExcelUtils.excelToCsv(multipartFile);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "文件数据异常");
+        }
         ThrowUtils.throwIf(csvData.length() > TREE_KB, ErrorCode.PARAMS_ERROR, "文件数据超出限制");
 
         // 保存数据到数据库
