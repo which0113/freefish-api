@@ -23,7 +23,7 @@ public class ExcelUtils {
     public static String excelToCsv(MultipartFile multipartFile) {
         // 1. load excel data
         List<Map<Integer, String>> list = null;
-        String suffix = FileUtil.getSuffix(multipartFile.getOriginalFilename());
+        String suffix = "." + FileUtil.getSuffix(multipartFile.getOriginalFilename());
         try {
             list = EasyExcel.read(multipartFile.getInputStream())
                     .excelType(getEnumByValue(suffix))
