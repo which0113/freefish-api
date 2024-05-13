@@ -17,6 +17,7 @@ import com.which.apicommon.common.ErrorCode;
 import com.which.apicommon.model.dto.user.UserLoginRequest;
 import com.which.apicommon.model.dto.user.UserRegisterRequest;
 import com.which.apicommon.model.dto.user.UserUpdatePasswordRequest;
+import com.which.apicommon.model.emums.UserGenderEnum;
 import com.which.apicommon.model.emums.UserRoleEnum;
 import com.which.apicommon.model.emums.UserStatusEnum;
 import com.which.apicommon.model.entity.User;
@@ -134,6 +135,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
             }
+            // 默认性别保密
+            user.setGender(UserGenderEnum.secret.getValue());
             Long userId = user.getId();
             // 防止MQ消息发送失败导致事务回滚
 //            try {

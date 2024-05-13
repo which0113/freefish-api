@@ -2,7 +2,6 @@ package com.which.api.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.which.api.annotation.AuthCheck;
@@ -16,6 +15,7 @@ import com.which.apicommon.model.dto.user.email.UserBindEmailRequest;
 import com.which.apicommon.model.dto.user.email.UserEmailLoginRequest;
 import com.which.apicommon.model.dto.user.email.UserEmailRegisterRequest;
 import com.which.apicommon.model.dto.user.email.UserUnBindEmailRequest;
+import com.which.apicommon.model.emums.UserGenderEnum;
 import com.which.apicommon.model.emums.UserStatusEnum;
 import com.which.apicommon.model.entity.User;
 import com.which.apicommon.model.vo.UserLoginVO;
@@ -137,6 +137,9 @@ public class UserController {
         if (userAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        if (StringUtils.isBlank(userAddRequest.getGender())) {
+            userAddRequest.setGender(UserGenderEnum.secret.getValue());
+        }
         User user = new User();
         BeanUtil.copyProperties(userAddRequest, user);
         // 校验
@@ -175,7 +178,8 @@ public class UserController {
     @Transactional(rollbackFor = Exception.class)
     public BaseResponse<UserVO> updateUser(@RequestBody UserUpdateRequest userUpdateRequest,
                                            HttpServletRequest request) {
-        if (ObjectUtils.anyNull(userUpdateRequest, userUpdateRequest.getId()) || userUpdateRequest.getId() <= 0) {
+        Long userId = userUpdateRequest.getId();
+        if (ObjectUtils.anyNull(userUpdateRequest, userId) || userId <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
@@ -189,7 +193,7 @@ public class UserController {
         if (adminOperation && !loginUser.getUserRole().equals(ADMIN_ROLE)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
-        if (!ADMIN_ROLE.equals(loginUser.getUserRole()) && !userUpdateRequest.getId().equals(loginUser.getId())) {
+        if (!ADMIN_ROLE.equals(loginUser.getUserRole()) && !userId.equals(loginUser.getId())) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "只有本人或管理员可以修改");
         }
 
@@ -198,15 +202,12 @@ public class UserController {
         // 参数校验
         userService.validUser(user, false);
 
-        LambdaUpdateWrapper<User> userLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        userLambdaUpdateWrapper.eq(User::getId, user.getId());
-
-        boolean result = userService.update(user, userLambdaUpdateWrapper);
+        boolean result = userService.updateById(user);
         if (!result) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "更新失败");
         }
         UserVO userVO = new UserVO();
-        BeanUtil.copyProperties(userService.getById(user.getId()), userVO);
+        BeanUtil.copyProperties(userService.getById(userId), userVO);
         return ResultUtils.success(userVO);
     }
 
