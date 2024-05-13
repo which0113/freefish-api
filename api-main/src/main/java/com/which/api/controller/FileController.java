@@ -124,10 +124,10 @@ public class FileController {
         String fileSuffix = FileUtil.getSuffix(multipartFile.getOriginalFilename());
         if (FileUploadBizEnum.USER_AVATAR.equals(fileUploadBizEnum)) {
             if (fileSize > ONE_MB) {
-                return "文件大小不能超过 1M";
+                return "图片大小不能超过1M";
             }
             if (!Arrays.asList("jpeg", "jpg", "svg", "png", "webp", "jiff").contains(fileSuffix)) {
-                return "文件类型错误";
+                return "图片格式错误";
             }
         }
         return "success";
