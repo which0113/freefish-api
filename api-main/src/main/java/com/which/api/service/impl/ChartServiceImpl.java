@@ -77,23 +77,6 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
         long fileSize = multipartFile.getSize();
         ThrowUtils.throwIf(fileSize > TEN_MB, ErrorCode.PARAMS_ERROR, "文件最大10MB");
 
-        // 扣除积分
-        String redissonLock = (GEN_CHART_KEY + "genChartByAi:" + loginUser.getUserAccount()).intern();
-        redissonManager.redissonDistributedLocks(redissonLock, () -> {
-            User user = userService.getById(userId);
-            if (user == null) {
-                throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "账号不存在");
-            }
-            if (user.getBalance() < NEED_BALANCE) {
-                throw new BusinessException(ErrorCode.OPERATION_ERROR, "积分不足");
-            }
-            boolean update = userService.reduceWalletBalance(userId, NEED_BALANCE);
-            if (!update) {
-                throw new BusinessException(ErrorCode.OPERATION_ERROR, "AI分析失败");
-            }
-            return null;
-        }, "AI分析失败");
-
         // 拼接分析目标
         String userGoal = goal;
         if (StringUtils.isNotBlank(chartType)) {
@@ -127,6 +110,23 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
         Long chartId = chart.getId();
         // 异步处理
         msgAsynManager.handleMessage(chartId);
+
+        // 扣除积分
+        String redissonLock = (GEN_CHART_KEY + "genChartByAi:" + loginUser.getUserAccount()).intern();
+        redissonManager.redissonDistributedLocks(redissonLock, () -> {
+            User user = userService.getById(userId);
+            if (user == null) {
+                throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "账号不存在");
+            }
+            if (user.getBalance() < NEED_BALANCE) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "积分不足");
+            }
+            boolean update = userService.reduceWalletBalance(userId, NEED_BALANCE);
+            if (!update) {
+                throw new BusinessException(ErrorCode.OPERATION_ERROR, "AI分析失败");
+            }
+            return null;
+        }, "AI分析失败");
 
         BiVO biVO = new BiVO();
         biVO.setChartId(chartId);
