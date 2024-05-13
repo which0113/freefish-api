@@ -63,7 +63,7 @@ public class RedissonManager {
     public void doRateLimitByAi(String key) {
         // 创建一个限流器
         RRateLimiter rateLimiter = redissonClient.getRateLimiter(key);
-        rateLimiter.trySetRate(RateType.OVERALL, RATE_LIMIT_NUM_AI, 1, RateIntervalUnit.SECONDS);
+        rateLimiter.trySetRate(RateType.OVERALL, RATE_LIMIT_AI_NUM, 1, RateIntervalUnit.SECONDS);
         // 每当一个操作来了后，请求一个令牌
         boolean canOp = rateLimiter.tryAcquire(1);
         ThrowUtils.throwIf(!canOp, ErrorCode.REQUEST_ERROR);

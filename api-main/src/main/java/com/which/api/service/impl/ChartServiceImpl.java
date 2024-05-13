@@ -26,7 +26,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import static com.which.apicommon.constant.CommonConstant.*;
-import static com.which.apicommon.constant.RedisConstant.GEN_CHART_BY_AI;
+import static com.which.apicommon.constant.RedisConstant.GEN_CHART_KEY;
 import static com.which.apicommon.constant.RedisConstant.RATE_LIMIT_KEY;
 
 /**
@@ -78,7 +78,7 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
         ThrowUtils.throwIf(fileSize > TEN_MB, ErrorCode.PARAMS_ERROR, "文件最大10MB");
 
         // 扣除积分
-        String redissonLock = (GEN_CHART_BY_AI + "genChartByAi:" + loginUser.getUserAccount()).intern();
+        String redissonLock = (GEN_CHART_KEY + "genChartByAi:" + loginUser.getUserAccount()).intern();
         redissonManager.redissonDistributedLocks(redissonLock, () -> {
             User user = userService.getById(userId);
             if (user == null) {

@@ -166,7 +166,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         redisTemplate.opsForValue().set(checkInKey, day, refreshTime, TimeUnit.SECONDS);
 
         // 签到积分+5
-        String redissonLock = (GEN_CHART_BY_AI + "userCheckIn:" + loginUser.getUserAccount()).intern();
+        String redissonLock = (GEN_CHART_KEY + "userCheckIn:" + loginUser.getUserAccount()).intern();
         redissonManager.redissonDistributedLocks(redissonLock, () -> {
             boolean update = this.increaseWalletBalance(userId, CHECKIN_BALANCE);
             if (!update) {

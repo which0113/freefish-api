@@ -15,7 +15,7 @@ public interface RedisConstant {
     /**
      * AI 分析积分扣除
      */
-    String GEN_CHART_BY_AI = "ai:";
+    String GEN_CHART_KEY = "ai:";
 
     /**
      * 用户的CURD
@@ -40,7 +40,7 @@ public interface RedisConstant {
     /**
      * 图表分析限流请求数量（每秒 1 次）
      */
-    Long RATE_LIMIT_NUM_AI = 1L;
+    Long RATE_LIMIT_AI_NUM = 1L;
 
     /**
      * 获取分布式锁自旋时长
