@@ -81,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "昵称过长");
         }
         if (userAccount.length() < 4) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号过短");
         }
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短");
@@ -137,6 +137,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
             // 默认性别保密
             user.setGender(UserGenderEnum.secret.getValue());
+            // 默认头像设置
+            user.setUserAvatar(DEFAULT_AVATAR);
             Long userId = user.getId();
             // 防止MQ消息发送失败导致事务回滚
 //            try {
@@ -191,7 +193,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         if (userAccount.length() < 4) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短，不能小于4位");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号过短，不能小于4位");
         }
         if (userPassword.length() < 8) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
@@ -313,35 +315,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void validUser(User user, boolean add) {
+    public void validUser(User user) {
         if (user == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         String userAccount = user.getUserAccount();
         String userPassword = user.getUserPassword();
         Long balance = user.getBalance();
-
-        if (add) {
-            if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-                throw new BusinessException(ErrorCode.PARAMS_ERROR);
-            }
-            if (userPassword.length() < 8) {
-                throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
-            }
-        } else {
-            // 如果密码不为空
-            if (userPassword != null) {
-                // 长度不能小于8
-                if (userPassword.length() < 8) {
-                    throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
-                }
-                // 不能是空白（可以为空）
-                if (!userPassword.trim().isEmpty()) {
-                    throw new BusinessException(ErrorCode.PARAMS_ERROR);
-                }
-            }
-            // 为空表示不更新密码
-        }
 
         // 账户不包含特殊字符，匹配由数字、小写字母、大写字母组成的字符串，且字符串的长度至少为1个字符
         String pattern = "[0-9a-zA-Z]+";

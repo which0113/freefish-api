@@ -25,6 +25,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.which.apicommon.constant.CommonConstant.SORT_ORDER_ASC;
-import static com.which.apicommon.constant.UserConstant.ADMIN_ROLE;
+import static com.which.apicommon.constant.UserConstant.*;
 
 /**
  * 用户接口
@@ -137,14 +138,42 @@ public class UserController {
         if (userAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        if (StringUtils.isBlank(userAddRequest.getGender())) {
-            userAddRequest.setGender(UserGenderEnum.secret.getValue());
-        }
+
         User user = new User();
         BeanUtil.copyProperties(userAddRequest, user);
-        // 校验
-        userService.validUser(user, true);
+        // 添加操作校验
+        String userAccount = user.getUserAccount();
+        String userPassword = user.getUserPassword();
+        String gender = user.getGender();
+        String userName = user.getUserName();
+        if (StringUtils.isAnyBlank(userAccount, userPassword)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        if (userAccount.length() < 4) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号过短");
+        }
+        if (userName.length() > 40) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "昵称过长");
+        }
+        if (userPassword.length() < 8) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
+        }
+        if (StringUtils.isBlank(gender)) {
+            user.setGender(UserGenderEnum.secret.getValue());
+        }
+        // ak/sk
+        String accessKey = DigestUtils.md5DigestAsHex((userAccount + SALT + VOUCHER).getBytes());
+        String secretKey = DigestUtils.md5DigestAsHex((SALT + VOUCHER + userAccount).getBytes());
+        user.setAccessKey(accessKey);
+        user.setSecretKey(secretKey);
+        // 设置默认头像
+        user.setUserAvatar(DEFAULT_AVATAR);
+        // 设置邀请码
         user.setInvitationCode(CodeUtils.generateRandomString(8));
+
+        // 其他校验
+        userService.validUser(user);
+
         boolean result = userService.save(user);
         if (!result) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
@@ -199,13 +228,39 @@ public class UserController {
 
         User user = new User();
         BeanUtil.copyProperties(userUpdateRequest, user);
-        // 参数校验
-        userService.validUser(user, false);
+
+        String userPassword = user.getUserPassword();
+        String gender = user.getGender();
+        String userName = user.getUserName();
+        // 如果密码不为空
+        if (userPassword != null) {
+            // 长度不能小于8
+            if (userPassword.length() < 8) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
+            }
+            // 不能是空白（可以为空）
+            if (!userPassword.trim().isEmpty()) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码不能为空白");
+            }
+        }
+        // 如果性别不为空
+        if (gender != null && gender.trim().isEmpty()) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请选择正确的性别");
+        }
+        // 如果昵称不为空
+        if (userName != null && userName.length() > 40) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "昵称过长");
+        }
+        // 为空表示不更新
+
+        // 其他校验
+        userService.validUser(user);
 
         boolean result = userService.updateById(user);
         if (!result) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "更新失败");
         }
+
         UserVO userVO = new UserVO();
         BeanUtil.copyProperties(userService.getById(userId), userVO);
         return ResultUtils.success(userVO);

@@ -53,7 +53,7 @@ public class ApiMsgConsumer {
         String userRole = user.getUserRole();
         if (StringUtils.isBlank(userRole)) {
             channel.basicNack(deliveryTag, false, false);
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "用户角色为空");
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "角色为空");
         }
         // 如果用户角色不为游客，代表已登录激活账号
         if (!userRole.equals(UserRoleEnum.VISITOR.getValue())) {

@@ -42,4 +42,9 @@ public interface UserConstant {
      */
     String OPTIONS = "OPTIONS";
 
+    /**
+     * 默认头像地址
+     */
+    String DEFAULT_AVATAR = "https://img.freefish.love/defaultAvatar.png";
+
 }
