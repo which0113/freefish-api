@@ -121,7 +121,7 @@ public class FileController {
         // 文件大小
         long fileSize = multipartFile.getSize();
         // 文件后缀
-        String fileSuffix = FileUtil.getSuffix(multipartFile.getOriginalFilename());
+        String fileSuffix = "." + FileUtil.getSuffix(multipartFile.getOriginalFilename());
         if (FileUploadBizEnum.USER_AVATAR.equals(fileUploadBizEnum)) {
             if (fileSize > ONE_MB) {
                 return "图片大小不能超过1M";
