@@ -161,13 +161,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return false;
         }
 
-        // 设置 checkInKey 的过期时间，凌晨0点清空
+        // 设置 checkInKey 的过期时间，当天的结束时间
         Date currentDate = new Date();
+        Date endOfDay = DateUtil.endOfDay(currentDate);
+        long refreshTime = DateUtil.between(currentDate, endOfDay, DateUnit.SECOND);
         String day = DateFormatUtils.format(currentDate, "yyyyMMdd");
-        // 获取明天凌晨0点的时间
-        Date tomorrowZero = DateUtil.beginOfDay(DateUtil.tomorrow());
-        // 计算时间差，单位为秒
-        long refreshTime = DateUtil.between(currentDate, tomorrowZero, DateUnit.SECOND);
         redisTemplate.opsForValue().set(checkInKey, day, refreshTime, TimeUnit.SECONDS);
 
         // 签到积分+5
