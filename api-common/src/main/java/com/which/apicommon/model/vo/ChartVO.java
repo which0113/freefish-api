@@ -2,7 +2,7 @@ package com.which.apicommon.model.vo;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 图表信息 VO
@@ -55,5 +55,5 @@ public class ChartVO {
     /**
      * 更新时间
      */
-    private Date updateTime;
+    private LocalDateTime updateTime;
 }

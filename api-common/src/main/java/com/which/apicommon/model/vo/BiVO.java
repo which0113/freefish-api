@@ -2,6 +2,8 @@ package com.which.apicommon.model.vo;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * @author which
  */
@@ -15,5 +17,7 @@ public class BiVO {
     private String genResult;
 
     private Long chartId;
+
+    private LocalDateTime updateTime;
 
 }

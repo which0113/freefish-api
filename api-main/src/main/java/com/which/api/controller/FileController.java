@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static com.which.apicommon.constant.CommonConstant.ONE_MB;
@@ -56,6 +57,7 @@ public class FileController {
         String biz = uploadFileRequest.getBiz();
         FileUploadBizEnum fileUploadBizEnum = FileUploadBizEnum.getEnumByValue(biz);
         ImageVO imageVO = new ImageVO();
+        imageVO.setUpdateTime(LocalDateTime.now());
         if (fileUploadBizEnum == null) {
             return uploadError(imageVO, multipartFile, "上传失败，请重试.");
         }

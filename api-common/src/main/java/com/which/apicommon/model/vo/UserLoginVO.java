@@ -3,7 +3,7 @@ package com.which.apicommon.model.vo;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 用户视图token（脱敏）
@@ -65,7 +65,7 @@ public class UserLoginVO implements Serializable {
     /**
      * 更新时间
      */
-    private Date updateTime;
+    private LocalDateTime updateTime;
     /**
      * token
      */

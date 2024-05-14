@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 import static com.which.apicommon.constant.CommonConstant.*;
 import static com.which.apicommon.constant.RedisConstant.GEN_CHART_KEY;
@@ -130,6 +131,7 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
 
         BiVO biVO = new BiVO();
         biVO.setChartId(chartId);
+        biVO.setUpdateTime(LocalDateTime.now());
         return biVO;
     }
 

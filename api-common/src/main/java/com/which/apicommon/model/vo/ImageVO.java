@@ -3,6 +3,7 @@ package com.which.apicommon.model.vo;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author which
@@ -14,4 +15,5 @@ public class ImageVO implements Serializable {
     private String name;
     private String status;
     private String url;
+    private LocalDateTime updateTime;
 }
