@@ -69,7 +69,7 @@ yuapi:
   client:
     access-key: xxx
     secret-key: xxx
-# GPT key
+# OpenAI
 open-ai-client:
   api-key: "sk-xxx"
   api-host: https://代理地址
