@@ -1,8 +1,7 @@
 package com.which.api.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUnit;
-import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -26,7 +25,6 @@ import com.which.apicommon.model.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +32,9 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -162,11 +161,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         // 设置 checkInKey 的过期时间，当天的结束时间
-        Date currentDate = new Date();
-        Date endOfDay = DateUtil.endOfDay(currentDate);
-        long refreshTime = DateUtil.between(currentDate, endOfDay, DateUnit.SECOND);
-        String day = DateFormatUtils.format(currentDate, "yyyyMMdd");
-        redisTemplate.opsForValue().set(checkInKey, day, refreshTime, TimeUnit.SECONDS);
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime endOfDay = LocalDateTimeUtil.endOfDay(currentDate);
+        long refreshTime = LocalDateTimeUtil.between(currentDate, endOfDay, ChronoUnit.SECONDS);
+        redisTemplate.opsForValue().set(checkInKey, currentDate, refreshTime, TimeUnit.SECONDS);
 
         // 签到积分+5
         String redissonLock = (GEN_CHART_KEY + "userCheckIn:" + loginUser.getUserAccount()).intern();
