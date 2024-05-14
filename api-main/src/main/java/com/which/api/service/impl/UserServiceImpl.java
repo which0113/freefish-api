@@ -131,14 +131,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setInvitationCode(CodeUtils.generateRandomString(8));
             // 游客
             user.setUserRole(UserRoleEnum.VISITOR.getValue());
-            boolean saveResult = this.save(user);
-            if (!saveResult) {
-                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
-            }
             // 默认性别保密
             user.setGender(UserGenderEnum.secret.getValue());
             // 默认头像设置
             user.setUserAvatar(DEFAULT_AVATAR);
+            boolean saveResult = this.save(user);
+            if (!saveResult) {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
+            }
             Long userId = user.getId();
             // 防止MQ消息发送失败导致事务回滚
 //            try {
