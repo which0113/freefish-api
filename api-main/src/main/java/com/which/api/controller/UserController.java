@@ -108,8 +108,8 @@ public class UserController {
      */
     @GetMapping("/get/login")
     public BaseResponse<UserVO> getLoginUser(HttpServletRequest request) {
-        UserVO user = userService.getLoginUser(request);
-        return ResultUtils.success(user);
+        UserVO loginUser = userService.getLoginUser(request);
+        return ResultUtils.success(loginUser);
     }
 
     /**
@@ -205,8 +205,7 @@ public class UserController {
      */
     @PostMapping("/update")
     @Transactional(rollbackFor = Exception.class)
-    public BaseResponse<UserVO> updateUser(@RequestBody UserUpdateRequest userUpdateRequest,
-                                           HttpServletRequest request) {
+    public BaseResponse<UserVO> updateUser(@RequestBody UserUpdateRequest userUpdateRequest, HttpServletRequest request) {
         Long userId = userUpdateRequest.getId();
         if (ObjectUtils.anyNull(userUpdateRequest, userId) || userId <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -218,6 +217,10 @@ public class UserController {
                 || StringUtils.isNoneBlank(userUpdateRequest.getUserPassword());
         // 校验是否登录
         UserVO loginUser = userService.getLoginUser(request);
+        // 演示账号无权限
+        if (DEMO_ROLE.equals(loginUser.getUserRole())) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
         // 处理管理员业务,不是管理员抛异常
         if (adminOperation && !loginUser.getUserRole().equals(ADMIN_ROLE)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
@@ -275,8 +278,7 @@ public class UserController {
      */
     @PostMapping("/password/update")
     @Transactional(rollbackFor = Exception.class)
-    public BaseResponse<Boolean> updateUserPassword(@RequestBody UserUpdatePasswordRequest userUpdatePasswordRequest,
-                                                    HttpServletRequest request) {
+    public BaseResponse<Boolean> updateUserPassword(@RequestBody UserUpdatePasswordRequest userUpdatePasswordRequest, HttpServletRequest request) {
         if (ObjectUtils.anyNull(userUpdatePasswordRequest, userUpdatePasswordRequest.getId()) || userUpdatePasswordRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -285,7 +287,7 @@ public class UserController {
     }
 
     /**
-     * 根据 id 获取用户（仅管理员）
+     * 根据 id 获取用户
      *
      * @param id
      * @return
@@ -308,6 +310,7 @@ public class UserController {
      * @return
      */
     @GetMapping("/list/page")
+    @AuthCheck(anyRole = {ADMIN_ROLE, DEMO_ROLE})
     public BaseResponse<Page<UserVO>> listUserByPage(UserQueryRequest userQueryRequest) {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -477,8 +480,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/email/login")
-    public BaseResponse<UserVO> userEmailLogin(@RequestBody UserEmailLoginRequest
-                                                       userEmailLoginRequest, HttpServletRequest request) {
+    public BaseResponse<UserVO> userEmailLogin(@RequestBody UserEmailLoginRequest userEmailLoginRequest, HttpServletRequest request) {
         throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 
@@ -490,8 +492,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/bind/login")
-    public BaseResponse<UserVO> userBindEmail(@RequestBody UserBindEmailRequest
-                                                      userBindEmailRequest, HttpServletRequest request) {
+    public BaseResponse<UserVO> userBindEmail(@RequestBody UserBindEmailRequest userBindEmailRequest, HttpServletRequest request) {
         throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 
@@ -503,8 +504,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/unbindEmail")
-    public BaseResponse<UserVO> userUnBindEmail(@RequestBody UserUnBindEmailRequest
-                                                        userUnBindEmailRequest, HttpServletRequest request) {
+    public BaseResponse<UserVO> userUnBindEmail(@RequestBody UserUnBindEmailRequest userUnBindEmailRequest, HttpServletRequest request) {
         throw new BusinessException(ErrorCode.SYSTEM_ERROR, "开发中");
     }
 

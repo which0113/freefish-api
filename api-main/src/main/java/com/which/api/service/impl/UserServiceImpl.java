@@ -33,6 +33,7 @@ import org.springframework.util.DigestUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Map;
@@ -161,10 +162,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         // 设置 checkInKey 的过期时间，当天的结束时间
-        LocalDateTime currentDate = LocalDateTime.now();
+        // 以 北京时间 为基准
+        LocalDateTime currentDate = LocalDateTime.now(ZoneId.of(ZoneId.SHORT_IDS.get("CTT")));
         LocalDateTime endOfDay = LocalDateTimeUtil.endOfDay(currentDate);
         long refreshTime = LocalDateTimeUtil.between(currentDate, endOfDay, ChronoUnit.SECONDS);
-        redisTemplate.opsForValue().set(checkInKey, currentDate, refreshTime, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(checkInKey, currentDate.toString(), refreshTime, TimeUnit.SECONDS);
 
         // 签到积分+5
         String redissonLock = (GEN_CHART_KEY + "userCheckIn:" + loginUser.getUserAccount()).intern();
@@ -362,6 +364,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         User user = this.getById(userId);
         UserVO loginUser = this.getLoginUser(request);
+        // 演示账号无权限
+        if (DEMO_ROLE.equals(user.getUserRole())) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
         if (!ADMIN_ROLE.equals(user.getUserRole()) && !userId.equals(loginUser.getId())) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "只有本人或管理员可以修改");
         }

@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import com.which.api.manager.OssManager;
 import com.which.api.service.UserService;
 import com.which.apicommon.common.BaseResponse;
+import com.which.apicommon.common.BusinessException;
 import com.which.apicommon.common.ErrorCode;
 import com.which.apicommon.common.ResultUtils;
 import com.which.apicommon.model.dto.file.UploadFileRequest;
@@ -27,6 +28,7 @@ import java.util.Arrays;
 
 import static com.which.apicommon.constant.CommonConstant.ONE_MB;
 import static com.which.apicommon.constant.CommonConstant.OSS_HOST;
+import static com.which.apicommon.constant.UserConstant.DEMO_ROLE;
 
 /**
  * 文件接口
@@ -66,6 +68,10 @@ public class FileController {
             return uploadError(imageVO, multipartFile, result);
         }
         UserVO loginUser = userService.getLoginUser(request);
+        // 演示账号无权限
+        if (DEMO_ROLE.equals(loginUser.getUserRole())) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
         // 文件目录：根据业务、用户来划分
         String uuid = RandomStringUtils.randomAlphanumeric(8);
         String filename = uuid + "-" + multipartFile.getOriginalFilename();

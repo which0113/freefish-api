@@ -47,17 +47,17 @@ public class AuthInterceptor {
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
         // 当前登录用户
-        UserVO user = userService.getLoginUser(request);
+        UserVO loginUser = userService.getLoginUser(request);
         // 拥有任意权限即通过
         if (CollectionUtils.isNotEmpty(anyRole)) {
-            String userRole = user.getUserRole();
+            String userRole = loginUser.getUserRole();
             if (!anyRole.contains(userRole)) {
                 throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
             }
         }
         // 必须有所有权限才通过
         if (StringUtils.isNotBlank(mustRole)) {
-            String userRole = user.getUserRole();
+            String userRole = loginUser.getUserRole();
             if (!mustRole.equals(userRole)) {
                 throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
             }
