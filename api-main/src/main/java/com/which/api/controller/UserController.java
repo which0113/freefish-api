@@ -261,7 +261,7 @@ public class UserController {
         userService.validUser(user);
 
         // 设置默认头像
-        if (StringUtils.isBlank(userAvatar)) {
+        if (userAvatar != null && userAvatar.trim().isEmpty()) {
             user.setUserAvatar(DEFAULT_AVATAR);
         }
 
