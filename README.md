@@ -35,8 +35,8 @@
 - [项目在线演示地址 🔗](https://www.freefish.love)
 - 演示账号：demo
 - 密码：12345678
-- [项目前端地址 🔗](https://github.com/which0113/freefish-api)
-- [项目后端地址 🔗](https://github.com/which0113/api-frontend)
+- [项目前端地址 🔗](https://github.com/which0113/api-frontend)
+- [项目后端地址 🔗](https://github.com/which0113/freefish-api)
 
 ## 技术栈
 
