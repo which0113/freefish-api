@@ -38,6 +38,80 @@
 - [项目前端地址 🔗](https://github.com/which0113/api-frontend)
 - [项目后端地址 🔗](https://github.com/which0113/freefish-api)
 
+## 项目展示
+
+### 首页
+
+![home.png](doc%2Fhome.png)
+
+### 接口广场
+
+#### 接口展示
+
+![api-display.png](doc%2Fapi-display.png)
+
+#### 接口详情
+
+![api-details.png](doc%2Fapi-details.png)
+
+##### API文档
+
+![api-doc.png](doc%2Fapi-doc.png)
+
+##### 错误码
+
+![error-codes.png](doc%2Ferror-codes.png)
+
+##### 示例代码
+
+![sample-code.png](doc%2Fsample-code.png)
+
+##### 在线调试
+
+![online-commissioning.png](doc%2Fonline-commissioning.png)
+
+### 智能分析
+
+![intelligent-analytics.png](doc%2Fintelligent-analytics.png)
+
+### 我的图表
+
+#### 图表展示
+
+![chart-display.png](doc%2Fchart-display.png)
+
+#### 图表下载
+
+![chart-download.png](doc%2Fchart-download.png)
+
+### 用户功能
+
+#### 登录
+
+![login.png](doc%2Flogin.png)
+
+#### 注册
+
+![register.png](doc%2Fregister.png)
+
+#### 个人中心
+
+![personal-center.png](doc%2Fpersonal-center.png)
+
+### 管理员功能
+
+#### 接口管理
+
+![interface-management.png](doc%2Finterface-management.png)
+
+#### 图表管理
+
+![chart-management.png](doc%2Fchart-management.png)
+
+#### 用户管理
+
+![user-management.png](doc%2Fuser-management.png)
+
 ## 技术栈
 
 - Spring Boot 2.7+
