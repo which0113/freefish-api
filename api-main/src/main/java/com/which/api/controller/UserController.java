@@ -243,7 +243,7 @@ public class UserController {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短，不能低于8位字符");
             }
             // 不能是空白（可以为空）
-            if (!userPassword.trim().isEmpty()) {
+            if (userPassword.trim().isEmpty()) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码不能为空白");
             }
         }
