@@ -235,6 +235,7 @@ public class UserController {
         String userPassword = user.getUserPassword();
         String gender = user.getGender();
         String userName = user.getUserName();
+        String userAvatar = user.getUserAvatar();
         // 如果密码不为空
         if (userPassword != null) {
             // 长度不能小于8
@@ -258,6 +259,11 @@ public class UserController {
 
         // 其他校验
         userService.validUser(user);
+
+        // 设置默认头像
+        if (StringUtils.isBlank(userAvatar)) {
+            user.setUserAvatar(DEFAULT_AVATAR);
+        }
 
         boolean result = userService.updateById(user);
         if (!result) {
