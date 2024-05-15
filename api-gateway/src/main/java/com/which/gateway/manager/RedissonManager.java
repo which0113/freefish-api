@@ -11,8 +11,8 @@ import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static com.which.gateway.constant.RedisConstant.RATE_LIMIT_NUM;
-import static com.which.gateway.constant.RedisConstant.WAIT_TIME;
+import static com.which.apicommon.constant.RedisConstant.RATE_LIMIT_NUM;
+import static com.which.apicommon.constant.RedisConstant.WAIT_TIME;
 
 /**
  * RedissonManager

@@ -40,10 +40,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.which.apicommon.constant.RedisConstant.GATEWAY_SERVER_KEY;
 import static com.which.apicommon.model.emums.UserAccountStatusEnum.BAN;
 import static com.which.apisdk.utils.SignUtils.getSign;
 import static com.which.gateway.CacheBodyGatewayFilter.CACHE_REQUEST_BODY_OBJECT_KEY;
-import static com.which.gateway.constant.RedisConstant.GATEWAY_SERVER_KEY;
 
 /**
  * 网关全局过滤器

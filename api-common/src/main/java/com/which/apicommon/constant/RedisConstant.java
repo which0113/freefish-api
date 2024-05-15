@@ -52,4 +52,9 @@ public interface RedisConstant {
      */
     Long USER_LOGIN_TTL = 1L;
 
+    /**
+     * 网关服务
+     */
+    String GATEWAY_SERVER_KEY = "gatewayServer:";
+
 }
