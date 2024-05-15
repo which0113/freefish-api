@@ -86,7 +86,10 @@ public class InterfaceInfoController {
         String url = interfaceInfoAddRequest.getUrl();
         String method = interfaceInfoAddRequest.getMethod();
         Integer reduceScore = interfaceInfoAddRequest.getReduceScore();
-        if (StringUtils.isAnyBlank(name, url, method) || reduceScore <= 0) {
+        if (StringUtils.isAnyBlank(name, url, method)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        if (reduceScore != null && reduceScore < 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
@@ -161,7 +164,10 @@ public class InterfaceInfoController {
         String url = interfaceInfoUpdateRequest.getUrl();
         String method = interfaceInfoUpdateRequest.getMethod();
         Integer reduceScore = interfaceInfoUpdateRequest.getReduceScore();
-        if (StringUtils.isAnyBlank(name, url, method) || reduceScore <= 0) {
+        if (StringUtils.isAnyBlank(name, url, method)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        if (reduceScore != null && reduceScore < 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
