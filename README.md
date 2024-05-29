@@ -59,8 +59,8 @@ git clone git@github.com:which0113/api-frontend.git
 
 #### 其他
 
-- [application-dev.yml](api-main%2Fsrc%2Fmain%2Fresources%2Fapplication-dev.yml) 文件可修改 **服务启动端口、MySQL、Redis、配置等等
-  **
+- [application-dev.yml](api-main%2Fsrc%2Fmain%2Fresources%2Fapplication-dev.yml) 配置文件可修改服务启动端口、MySQL、Redis
+  配置等等
 - [ddl.sql](sql%2Fddl.sql) 文件是 MySQL 数据库文件，可  **Ctrl A 全选 + Ctrl Enter 执行** 快速初始化数据库
 
 #### 运行
