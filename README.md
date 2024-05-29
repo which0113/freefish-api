@@ -38,6 +38,53 @@
 - [项目前端地址 🔗](https://github.com/which0113/api-frontend)
 - [项目后端地址 🔗](https://github.com/which0113/freefish-api)
 
+## 使用指导
+
+### 克隆项目到本地
+
+```bash
+git clone git@github.com:which0113/api-frontend.git
+```
+
+### 运行后端
+
+#### 注意事项
+
+- JDK 版本为 1.8
+- MySQL 版本为 8.0+
+- Maven 版本为 3.9+
+- Redis 版本为 5.0+
+
+#### 其他
+
+- [application-dev.yml](api-main%2Fsrc%2Fmain%2Fresources%2Fapplication-dev.yml) 文件可修改 **服务启动端口、MySQL、Redis、配置等等
+  **
+- [ddl.sql](sql%2Fddl.sql) 文件是 MySQL 数据库文件，可  **Ctrl A 全选 + Ctrl Enter 执行** 快速初始化数据库
+
+#### 运行
+
+准备项目启动所需的服务
+
+```
+MySQL 数据库
+
+Redis 缓存中间件
+
+RabbitMQ 消息队列
+
+Nacos 注册中心
+```
+
+启动项目的3个子服务
+
+```
+api-gateway 网关服务
+
+api-interface 接口服务
+
+api-main 核心服务
+```
+
 ## 项目展示
 
 ### 首页
