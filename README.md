@@ -77,6 +77,30 @@ RabbitMQ 消息队列
 Nacos 注册中心
 ```
 
+修改 application-dev.yml 配置文件
+
+```
+# 必须修改，否则不能运行 oss 服务
+# 对象存储 oss，不会请参考官方文档
+alibaba:
+  cloud:
+    oss:
+      endpoint: your_oss_serve_url
+    access-key: xxx
+    secret-key: xxx
+# 必须修改至少一个，否则不能运行 AI 服务
+# AI 服务，不会请参考官方文档
+# 鱼聪明AI
+yuapi:
+  client:
+    access-key: xxx
+    secret-key: xxx
+# OpenAI
+open-ai-client:
+  api-key: "sk-xxx"
+  api-host: https://代理地址
+```
+
 启动项目的3个子服务
 
 ```

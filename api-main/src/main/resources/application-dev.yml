@@ -57,13 +57,15 @@ com:
     client:
       # gateway host/api（仅用于 dev环境）
       host: http://localhost:9000/api
-# 对象存储 oss
+# 必须修改，否则不能运行 oss 服务
+# 对象存储 oss，可参考官方文档
 alibaba:
   cloud:
     oss:
-      endpoint: your_oss_serve_url（参考oss官方文档）
+      endpoint: your_oss_serve_url
     access-key: xxx
     secret-key: xxx
+# 必须修改至少一个，否则不能运行 AI 服务
 # 鱼聪明AI
 yuapi:
   client:
