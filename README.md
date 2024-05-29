@@ -54,6 +54,8 @@ git clone git@github.com:which0113/api-frontend.git
 - MySQL 版本为 8.0+
 - Maven 版本为 3.9+
 - Redis 版本为 5.0+
+- RabbitMQ 版本为 3.9+
+- Nacos 版本为 2.3+
 
 #### 其他
 
