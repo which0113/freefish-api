@@ -77,7 +77,7 @@ RabbitMQ 消息队列
 Nacos 注册中心
 ```
 
-修改 application-dev.yml 配置文件
+分别修改 api-gateway 和 api-main 模块的 application-dev.yml 配置文件
 
 ```
 # 必须修改，否则不能运行 oss 服务
