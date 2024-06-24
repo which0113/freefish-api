@@ -20,7 +20,7 @@ server:
 com:
   which:
     client:
-      # gateway host（仅用于 dev环境）
+      # gateway host（仅用于 dev 环境）
       host: http://localhost:9000
 dubbo:
   application:

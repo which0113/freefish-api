@@ -55,7 +55,7 @@ dubbo:
 com:
   which:
     client:
-      # gateway host/api（仅用于 dev环境）
+      # gateway host/api（仅用于 dev 环境）
       host: http://localhost:9000/api
 # 必须修改，否则不能运行 oss 服务
 # 对象存储 oss，不会请参考官方文档
