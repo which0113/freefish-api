@@ -37,13 +37,14 @@ import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.which.apicommon.constant.RedisConstant.GATEWAY_SERVER_KEY;
 import static com.which.apicommon.model.emums.UserAccountStatusEnum.BAN;
 import static com.which.apisdk.utils.SignUtils.getSign;
-import static com.which.gateway.CacheBodyGatewayFilter.CACHE_REQUEST_BODY_OBJECT_KEY;
 
 /**
  * 网关全局过滤器
@@ -163,24 +164,25 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
             }
             MultiValueMap<String, String> queryParams = request.getQueryParams();
             String requestParams = interfaceInfo.getRequestParams();
-            List<RequestParamsField> list = new Gson().fromJson(requestParams, new TypeToken<List<RequestParamsField>>() {
-            }.getType());
             if ("POST".equals(method)) {
-                Object cacheBody = exchange.getAttribute(CACHE_REQUEST_BODY_OBJECT_KEY);
-                String requestBody = getPostRequestBody((Flux<DataBuffer>) cacheBody);
-                log.info("POST请求参数：" + requestBody);
-                Map<String, Object> requestBodyMap = new Gson().fromJson(requestBody, new TypeToken<HashMap<String, Object>>() {
-                }.getType());
-                if (StringUtils.isNotBlank(requestParams)) {
-                    for (RequestParamsField requestParamsField : list) {
-                        if ("是".equals(requestParamsField.getRequired())) {
-                            if (StringUtils.isBlank((CharSequence) requestBodyMap.get(requestParamsField.getFieldName())) || !requestBodyMap.containsKey(requestParamsField.getFieldName())) {
-                                throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求参数有误，" + requestParamsField.getFieldName() + "为必选项，详细参数请参考API文档");
-                            }
-                        }
-                    }
-                }
+                // todo 暂时不做处理
+                // Object cacheBody = exchange.getAttribute(CACHE_REQUEST_BODY_OBJECT_KEY);
+                // String requestBody = getPostRequestBody((Flux<DataBuffer>) cacheBody);
+                // log.info("POST请求参数：" + requestBody);
+                // Map<String, Object> requestBodyMap = new Gson().fromJson(requestBody, new TypeToken<HashMap<String, Object>>() {
+                // }.getType());
+                // if (StringUtils.isNotBlank(requestParams)) {
+                //     for (RequestParamsField requestParamsField : list) {
+                //         if ("是".equals(requestParamsField.getRequired())) {
+                //             if (StringUtils.isBlank((CharSequence) requestBodyMap.get(requestParamsField.getFieldName())) || !requestBodyMap.containsKey(requestParamsField.getFieldName())) {
+                //                 throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求参数有误，" + requestParamsField.getFieldName() + "为必选项，详细参数请参考API文档");
+                //             }
+                //         }
+                //     }
+                // }
             } else if ("GET".equals(method)) {
+                List<RequestParamsField> list = new Gson().fromJson(requestParams, new TypeToken<List<RequestParamsField>>() {
+                }.getType());
                 log.info("GET请求参数：" + request.getQueryParams());
                 // 校验请求参数
                 if (StringUtils.isNotBlank(requestParams)) {

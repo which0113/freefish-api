@@ -20,6 +20,7 @@ import com.which.apicommon.model.entity.InterfaceInfo;
 import com.which.apicommon.model.vo.InterfaceInfoVO;
 import com.which.apicommon.model.vo.UserVO;
 import com.which.apisdk.client.ApiClient;
+import com.which.apisdk.model.request.CommonRequest;
 import com.which.apisdk.model.request.CurrencyRequest;
 import com.which.apisdk.model.response.ResultResponse;
 import com.which.apisdk.service.ApiService;
@@ -418,12 +419,27 @@ public class InterfaceInfoController {
         String accessKey = loginUser.getAccessKey();
         String secretKey = loginUser.getSecretKey();
         try {
+            // 这里如果不使用登录用户的凭证，则会使用 YML 配置的哦！
             ApiClient apiClient = new ApiClient(accessKey, secretKey);
-            CurrencyRequest currencyRequest = new CurrencyRequest();
-            currencyRequest.setMethod(interfaceInfo.getMethod());
-            currencyRequest.setPath(interfaceInfo.getUrl());
-            currencyRequest.setRequestParams(params);
-            ResultResponse response = apiService.request(apiClient, currencyRequest);
+            String method = interfaceInfo.getMethod();
+            ResultResponse response = new ResultResponse();
+            switch (method) {
+                case "GET":
+                    CurrencyRequest currencyRequest = new CurrencyRequest();
+                    currencyRequest.setMethod(interfaceInfo.getMethod());
+                    currencyRequest.setPath(interfaceInfo.getUrl());
+                    currencyRequest.setRequestParams(params);
+                    response = apiService.request(apiClient, currencyRequest);
+                    break;
+                case "POST":
+                    CommonRequest commonRequest = new CommonRequest();
+                    commonRequest.setPath(interfaceInfo.getUrl());
+                    commonRequest.setRequestParams(params);
+                    response = apiService.getCommonInfo(apiClient, commonRequest);
+                    break;
+                default:
+                    break;
+            }
             return ResultUtils.success(response.getData());
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, e.getMessage());
