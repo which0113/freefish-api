@@ -81,7 +81,7 @@ Nacos 注册中心
 
 ```
 # 必须修改，否则不能运行 oss 服务
-# 对象存储 oss，不会请参考官方文档
+# 对象存储 oss，请参考官方文档
 alibaba:
   cloud:
     oss:
@@ -89,7 +89,7 @@ alibaba:
     access-key: xxx
     secret-key: xxx
 # 必须修改至少一个，否则不能运行 AI 服务
-# AI 服务，不会请参考官方文档
+# AI 服务，请参考官方文档
 # 鱼聪明AI
 yuapi:
   client:
