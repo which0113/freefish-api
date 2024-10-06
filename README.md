@@ -1,5 +1,5 @@
 <p align="center">
-    <img src=https://img.freefish.love/logo.png width=188/>
+    <img src=doc/logo.png width=188/>
 </p>
 <h1 align="center">咸鱼-API 接口开放平台</h1>
 <p align="center"><strong>咸鱼-API 接口开放平台是一个为用户和开发者提供全面API接口调用服务的平台 🛠</strong></p>
