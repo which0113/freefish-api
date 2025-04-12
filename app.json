@@ -1,49 +1,75 @@
 {
-  "spider": "https://fs-im-kefu.7moor-fs1.com/ly/4d2c3f00-7d4c-11e5-af15-41bf63ae4ea0/1742919787619/f0326B.txt;md5;54c3c5cd399274cfdbed01fd53e65fd4",
+  "spider": "https://fs-im-kefu.7moor-fs1.com/ly/4d2c3f00-7d4c-11e5-af15-41bf63ae4ea0/1744303415778/f0411.txt;md5;2c6500c44ee7e7b915f8c0afb0723e50",
   "sites": [
     {
-      "key": "豆豆",
+      "key": "which",
       "name": "🌕全部",
       "type": 3,
-      "api": "csp_DouDou",
+      "api": "csp_DouDouGuard",
+      "indexs": 1,
       "searchable": 0,
       "quickSearch": 0,
-      "filterable": 0
+      "changeable": 0
+    },
+    {
+      "key": "原创",
+      "name": "☀原创",
+      "type": 3,
+      "api": "csp_YCyzGuard",
+      "timeout": 10,
+      "playerType": 1,
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
+    },
+    {
+      "key": "苹果",
+      "name": "🍎苹果",
+      "type": 3,
+      "api": "csp_LiteAppleGuard",
+      "timeout": 10,
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
       "key": "糯米",
-      "name": "🍓糯米┃秒播",
+      "name": "🍓糯米",
       "type": 3,
       "api": "csp_NmyswvGuard",
+      "timeout": 10,
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
     },
     {
       "key": "白白",
-      "name": "🐟白白┃秒播",
+      "name": "🐟白白",
       "type": 3,
       "api": "csp_SbaibaiGuard",
+      "timeout": 10,
       "playerType": 2,
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1
     },
     {
-      "key": "神车",
-      "name": "🐻小熊┃秒播",
+      "key": "文采",
+      "name": "💮文采",
       "type": 3,
-      "api": "csp_AppSKGuard",
+      "api": "csp_JpysGuard",
+      "timeout": 10,
+      "playerType": 2,
       "searchable": 1,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "rfOX1voDIQhH8epBwtCFsq+8syyZ18T30GkibomjS1xHcE9fpWU7oKJ1cO9K0M5hrnOHZ9dKjiJz5HEyTr57RZHCqunfFT7jH/mEy+uqVyo="
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
       "key": "Lib",
-      "name": "🌟立播┃秒播",
+      "name": "🌟立播",
       "type": 3,
       "api": "csp_LibvioGuard",
+      "timeout": 10,
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1,
@@ -54,80 +80,54 @@
     },
     {
       "key": "zxzj",
-      "name": "🍊在线┃秒播",
+      "name": "🍊在线",
       "type": 3,
       "api": "csp_ZxzjGuard",
-      "timeout": 15,
+      "timeout": 10,
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1,
       "ext": "https://www.zxzjhd.com/"
     },
     {
-      "key": "溢彩",
-      "name": "💡溢彩┃秒播",
-      "type": 3,
-      "api": "csp_AppSxGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "rfOX1voDIQhH8epBwpmIsuS/sSCZ0NTplTombcqjS1xHcE9fpWUjrfFiL+kMh4cw4jGBLJBFjnM="
-    },
-    {
-      "key": "比特",
-      "name": "🍄比特┃秒播",
-      "type": 3,
-      "api": "csp_BttwooGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "文采",
-      "name": "💮文采┃秒播",
-      "type": 3,
-      "api": "csp_JpysGuard",
-      "playerType": 2,
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "原创",
-      "name": "☀原创┃不卡",
-      "type": 3,
-      "api": "csp_YCyzGuard",
-      "timeout": 15,
-      "playerType": 1,
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
-      "key": "苹果",
-      "name": "🍎苹果┃不卡",
-      "type": 3,
-      "api": "csp_LiteAppleGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1
-    },
-    {
       "key": "厂长",
-      "name": "📔厂长┃不卡",
+      "name": "📔厂长",
       "type": 3,
       "api": "csp_NewCzGuard",
+      "timeout": 10,
       "playerType": 2,
       "searchable": 1,
       "quickSearch": 1,
+      "changeable": 1
+    },
+    {
+      "key": "溢彩",
+      "name": "💡流光",
+      "type": 3,
+      "api": "csp_AppSxGuard",
+      "timeout": 10,
+      "searchable": 1,
+      "quickSearch": 1,
       "changeable": 1,
-      "ext": "https://www.czzyvideo.com/"
+      "ext": "rfOb1uAWbkRHp7hdxprG9un3+T/f19e82TUvZMviAElDfhsS/jcju7U0fe1MnN1h63CTaYIPjmEw9C0qVsgBO8um85+eGlSkG/r2q6m0DA=="
+    },
+    {
+      "key": "低端",
+      "name": "⏮️低端",
+      "type": 3,
+      "api": "csp_DdrkGuard",
+      "timeout": 10,
+      "playerType": "2",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
       "key": "萌米",
-      "name": "👀萌米┃多线",
+      "name": "👀萌米",
       "type": 3,
       "api": "csp_AppTTGuard",
+      "timeout": 10,
       "playerType": 2,
       "searchable": 1,
       "quickSearch": 1,
@@ -135,30 +135,11 @@
       "ext": "uqGL1bNENEIVq+dC1p/Y9uWjuA=="
     },
     {
-      "key": "兄弟",
-      "name": "🍊水星┃多线",
-      "type": 3,
-      "api": "csp_AppSxGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "rfOb1uAWbkRHp7hdxprG9un3+SLP183q3ik3cJDiAwlFdF8L6SIvrvc9LrpTyIg76T7QJZdEkWNj43wiSaA0TJyQpu2IF2jsSLWFx7WkAmG40hFxJ1tI+Jf+EVG8DtoDRcNi+TtVGULnWrSz3EWnVcxR3EJhXnrwYWe1kJtNW5txuHAO"
-    },
-    {
-      "key": "火星",
-      "name": "🌞火星┃多线",
-      "type": 3,
-      "api": "csp_AppSxGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "rfOX1voDIQhH8epBwpmIsuSlujLK3srq3iIoaYP8Hh5fZE0d4nF48/dsb7YNi44z/yjNcsFajjBz6XJtDuw2FdqR/a6UV3ywWevO"
-    },
-    {
       "key": "热播",
-      "name": "📺热播┃多线",
+      "name": "📺热播",
       "type": 3,
       "api": "csp_AppTTGuard",
+      "timeout": 10,
       "playerType": 2,
       "searchable": 1,
       "quickSearch": 1,
@@ -167,9 +148,10 @@
     },
     {
       "key": "欢视",
-      "name": "👓欢视┃多线",
+      "name": "👓欢视",
       "type": 3,
       "api": "csp_AppTTGuard",
+      "timeout": 10,
       "playerType": 2,
       "searchable": 1,
       "quickSearch": 1,
@@ -178,207 +160,51 @@
     },
     {
       "key": "奥特",
-      "name": "🏝奥特┃多线",
+      "name": "🏝奥特",
       "type": 3,
       "api": "csp_AueteGuard",
-      "timeout": 15,
+      "timeout": 10,
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 1,
       "ext": "https://auete.com/"
-    }
-  ],
-  "doh": [
-    {
-      "name": "Google",
-      "url": "https://dns.google/dns-query",
-      "ips": [
-        "8.8.4.4",
-        "8.8.8.8"
-      ]
     },
     {
-      "name": "Cloudflare",
-      "url": "https://cloudflare-dns.com/dns-query",
-      "ips": [
-        "1.1.1.1",
-        "1.0.0.1",
-        "2606:4700:4700::1111",
-        "2606:4700:4700::1001"
-      ]
+      "key": "Dm84",
+      "name": "🚌巴士",
+      "type": 3,
+      "api": "csp_Dm84Guard",
+      "timeout": 10,
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
-      "name": "AdGuard",
-      "url": "https://dns.adguard.com/dns-query",
-      "ips": [
-        "94.140.14.140",
-        "94.140.14.141"
-      ]
+      "key": "Ysj",
+      "name": "🎀异界",
+      "type": 3,
+      "api": "csp_YsjGuard",
+      "timeout": 10,
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     },
     {
-      "name": "DNSWatch",
-      "url": "https://resolver2.dns.watch/dns-query",
-      "ips": [
-        "84.200.69.80",
-        "84.200.70.40"
-      ]
-    },
-    {
-      "name": "Quad9",
-      "url": "https://dns.quad9.net/dns-quer",
-      "ips": [
-        "9.9.9.9",
-        "149.112.112.112"
-      ]
-    }
-  ],
-  "rules": [
-    {
-      "name": "proxy",
-      "hosts": [
-        "raw.githubusercontent.com",
-        "googlevideo.com",
-        "cdn.v82u1l.com",
-        "cdn.iz8qkg.com",
-        "cdn.kin6c1.com",
-        "c.biggggg.com",
-        "c.olddddd.com",
-        "haiwaikan.com",
-        "www.histar.tv",
-        "youtube.com",
-        "uhibo.com",
-        ".*boku.*",
-        ".*nivod.*",
-        ".*ulivetv.*"
-      ]
-    },
-    {
-      "name": "kk",
-      "hosts": [
-        "kuaikan"
-      ],
-      "regex": [
-        "5",
-        "20.123",
-        "20.167",
-        "#EXT-X-DISCONTINUITY\\r*\\n*((?!#EXT-X-DISCONTINUITY)[\\s\\S])*?#EXT-X-KEY:METHOD((?!#EXT-X-DISCONTINUITY)[\\s\\S])*?#EXT-X-DISCONTINUITY"
-      ]
-    },
-    {
-      "name": "yqk",
-      "hosts": [
-        "yqk"
-      ],
-      "regex": [
-        "18.4",
-        "15.1666",
-        "#EXT-X-DISCONTINUITY\\r*\\n*((?!#EXT-X-DISCONTINUITY)[\\s\\S])*?#EXT-X-CUE-OUT((?!#EXT-X-DISCONTINUITY)[\\s\\S])*?#EXT-X-CUE-IN"
-      ]
-    },
-    {
-      "name": "sn",
-      "hosts": [
-        "suonizy"
-      ],
-      "regex": [
-        "#EXTINF.*?\\s+.*?original.*?\\.ts\\s+",
-        "15.1666",
-        "15.2666",
-        "16.3333",
-        "15.266667"
-      ]
-    },
-    {
-      "name": "bf",
-      "hosts": [
-        "bfzy"
-      ],
-      "regex": [
-        "#EXT-X-DISCONTINUITY\\r*\\n*#EXTINF:3,[\\s\\S]*?#EXT-X-DISCONTINUITY"
-      ]
-    },
-    {
-      "name": "xx",
-      "hosts": [
-        "aws.ulivetv.net"
-      ],
-      "regex": [
-        "#EXT-X-DISCONTINUITY\\r*\\n*#EXTINF:8,[\\s\\S]*?#EXT-X-DISCONTINUITY"
-      ]
-    },
-    {
-      "name": "lz",
-      "hosts": [
-        "vip.lz",
-        "hd.lz",
-        "v.cdnlz",
-        "yzzy1.play"
-      ],
-      "regex": [
-        "18.5333",
-        "19.52",
-        "18.6666"
-      ]
-    },
-    {
-      "name": "ff",
-      "hosts": [
-        "vip.ffzy",
-        "hd.ffzy",
-        "ffzy"
-      ],
-      "regex": [
-        "25.0666",
-        "25.08",
-        "20.52",
-        "25.1",
-        "25.1999"
-      ]
-    },
-    {
-      "name": "hs",
-      "hosts": [
-        "huoshan.com"
-      ],
-      "regex": [
-        "item_id="
-      ]
-    },
-    {
-      "name": "dy",
-      "hosts": [
-        "douyin.com"
-      ],
-      "regex": [
-        "is_play_url="
-      ]
-    },
-    {
-      "name": "nm",
-      "hosts": [
-        "toutiaovod.com"
-      ],
-      "regex": [
-        "video/tos/cn"
-      ]
-    },
-    {
-      "name": "cl",
-      "hosts": [
-        "magnet"
-      ],
-      "regex": [
-        "最 新",
-        "直 播",
-        "更 新"
-      ]
+      "key": "Anime1",
+      "name": "🐾日本",
+      "type": 3,
+      "api": "csp_Anime1Guard",
+      "timeout": 10,
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1
     }
   ],
   "lives": [
     {
       "name": "ITV",
       "type": 0,
-      "url": "https://mirror.ghproxy.com/raw.githubusercontent.com/ssili126/tv/main/itvlist.txt",
+      "url": "https://ghfast.top/https://raw.githubusercontent.com/ssili126/tv/main/itvlist.txt",
       "playerType": 1
     },
     {
@@ -386,12 +212,6 @@
       "type": 0,
       "url": "https://live.fanmingming.com/tv/m3u/ipv6.m3u",
       "playerType": 1
-    },
-    {
-      "name": "XIUTAN",
-      "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
-      "type": 0,
-      "url": "https://xhdwc.tk/xiutan.m3u"
     }
   ]
 }
